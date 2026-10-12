@@ -24,6 +24,7 @@
 #include "dac.h"
 #endif
 #include "hap.h"
+#include "mdns_airplay.h"
 #include "ntp_clock.h"
 #include "ptp_clock.h"
 #include "plist.h"
@@ -543,9 +544,11 @@ static void handle_get(int socket, rtsp_conn_t *conn, const rtsp_request_t *req,
     // Build info response
     char device_id[18];
     char device_name[65];
+    char pairing_id[37];
 
     rtsp_get_device_id(device_id, sizeof(device_id));
     settings_get_device_name(device_name, sizeof(device_name));
+    hap_get_pairing_identifier(pairing_id, sizeof(pairing_id));
     const uint8_t *pk = hap_get_public_key();
     uint64_t features =
         ((uint64_t)AIRPLAY_FEATURES_HI << 32) | AIRPLAY_FEATURES_LO;
@@ -560,7 +563,9 @@ static void handle_get(int socket, rtsp_conn_t *conn, const rtsp_request_t *req,
       static uint8_t body[1024];
       size_t body_len =
           bplist_build_info_response(body, sizeof(body), device_id, device_name,
-                                     pk, 32, features, protocol_version);
+                                     pairing_id, pk, 32, features,
+                                     protocol_version,
+                                     hap_pairing_count() > 0 ? 0x404 : 0x4);
       if (body_len == 0) {
         ESP_LOGE(TAG, "Failed to build binary /info response");
         rtsp_send_response(socket, conn, 500, "Internal Error", req->cseq, NULL,
@@ -586,9 +591,9 @@ static void handle_get(int socket, rtsp_conn_t *conn, const rtsp_request_t *req,
     plist_dict_string(&p, "protovers", "1.1");
     plist_dict_string(&p, "srcvers", "377.40.00");
     plist_dict_int(&p, "vv", protocol_version);
-    plist_dict_int(&p, "statusFlags", 4);
+    plist_dict_int(&p, "statusFlags", hap_pairing_count() > 0 ? 0x404 : 0x4);
     plist_dict_data(&p, "pk", pk, 32);
-    plist_dict_string(&p, "pi", "00000000-0000-0000-0000-000000000000");
+    plist_dict_string(&p, "pi", pairing_id);
     plist_dict_string(&p, "name", device_name);
 
     // Audio formats array
@@ -749,12 +754,6 @@ static void handle_post(int socket, rtsp_conn_t *conn,
         } else if (state[0] == 0x03) {
           err = hap_pair_verify_m3(conn->hap_session, body, body_len, response,
                                    1024, &response_len);
-          // TLV8 pair-verify M3 establishes RTSP channel encryption
-          if (err == ESP_OK &&
-              conn->hap_session->pair_verify_state == PAIR_VERIFY_STATE_M4) {
-            conn->encrypted_mode = true;
-            ESP_LOGI(TAG, "RTSP encryption enabled (TLV8 pair-verify)");
-          }
         }
       } else {
         // Raw format - used for audio encryption keys, not RTSP encryption
@@ -773,9 +772,21 @@ static void handle_post(int socket, rtsp_conn_t *conn,
     }
 
     if (err == ESP_OK && response_len > 0) {
+      bool enable_encryption_after_response =
+          conn->hap_session->pair_verify_state == PAIR_VERIFY_STATE_M4 &&
+          conn->hap_session->controller_authenticated;
+
+      // Pair-Verify M4 itself is the final plaintext response. Enabling the
+      // encrypted frame writer before sending it makes Apple wait for a
+      // plaintext RTSP response that never arrives and eventually time out.
       rtsp_send_response(socket, conn, 200, "OK", req->cseq,
                          "Content-Type: application/octet-stream\r\n",
                          (const char *)response, response_len);
+      if (enable_encryption_after_response) {
+        conn->encrypted_mode = true;
+        ESP_LOGI(TAG,
+                 "RTSP encryption enabled after plaintext pair-verify M4");
+      }
     } else {
       ESP_LOGE(TAG, "Pair-verify failed, err=%d", err);
       rtsp_send_response(socket, conn, 200, "OK", req->cseq,
@@ -784,6 +795,84 @@ static void handle_post(int socket, rtsp_conn_t *conn,
     }
 
     free(response);
+
+  } else if (strstr(req->path, "/pair-add") ||
+             strstr(req->path, "/pair-remove") ||
+             strstr(req->path, "/pair-list")) {
+    if (!conn->hap_session || !conn->encrypted_mode || !body ||
+        body_len == 0) {
+      ESP_LOGW(TAG, "Rejected pairing management request outside HAP session");
+      rtsp_send_response(socket, conn, 470, "Connection Authorization Required",
+                         req->cseq,
+                         "Content-Type: application/octet-stream\r\n", NULL,
+                         0);
+      return;
+    }
+
+    uint8_t *response = malloc(2048);
+    if (!response) {
+      rtsp_send_response(socket, conn, 500, "Internal Error", req->cseq, NULL,
+                         NULL, 0);
+      return;
+    }
+
+    size_t response_len = 0;
+    esp_err_t err;
+    if (strstr(req->path, "/pair-add")) {
+      err = hap_pair_add(conn->hap_session, body, body_len, response, 2048,
+                         &response_len);
+    } else if (strstr(req->path, "/pair-remove")) {
+      err = hap_pair_remove(conn->hap_session, body, body_len, response, 2048,
+                            &response_len);
+    } else {
+      err = hap_pair_list(conn->hap_session, body, body_len, response, 2048,
+                          &response_len);
+    }
+
+    if (err == ESP_OK && response_len > 0) {
+      rtsp_send_response(socket, conn, 200, "OK", req->cseq,
+                         "Content-Type: application/octet-stream\r\n",
+                         (const char *)response, response_len);
+      mdns_airplay_update_pairing_status();
+    } else {
+      ESP_LOGE(TAG, "Pairing management failed: %s", esp_err_to_name(err));
+      rtsp_send_response(socket, conn, 400, "Bad Request", req->cseq, NULL,
+                         NULL, 0);
+    }
+    free(response);
+
+  } else if (strstr(req->path, "/pair-pin-start")) {
+    // AirPlay asks for this endpoint before some pairing flows. No display is
+    // needed for the transient bootstrap used by Add to Home.
+    rtsp_send_ok(socket, conn, req->cseq);
+
+  } else if (strstr(req->path, "/configure")) {
+    if (!conn->hap_session || !conn->encrypted_mode) {
+      rtsp_send_response(socket, conn, 470, "Connection Authorization Required",
+                         req->cseq, NULL, NULL, 0);
+      return;
+    }
+
+    char pairing_id[37];
+    char device_name[65];
+    uint8_t response[512];
+    hap_get_pairing_identifier(pairing_id, sizeof(pairing_id));
+    settings_get_device_name(device_name, sizeof(device_name));
+    bool home_enabled = hap_pairing_count() > 0;
+    size_t response_len = bplist_build_home_configure_response(
+        response, sizeof(response), pairing_id, device_name,
+        hap_get_public_key(), HAP_ED25519_PUBLIC_KEY_SIZE, home_enabled, 0);
+    if (response_len == 0) {
+      rtsp_send_response(socket, conn, 500, "Internal Error", req->cseq, NULL,
+                         NULL, 0);
+      return;
+    }
+
+    mdns_airplay_update_pairing_status();
+    rtsp_send_response(
+        socket, conn, 200, "OK", req->cseq,
+        "Content-Type: application/x-apple-binary-plist\r\n",
+        (const char *)response, response_len);
 
   } else if (strstr(req->path, "/fp-setup")) {
     uint8_t *fp_response = NULL;

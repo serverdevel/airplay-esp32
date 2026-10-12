@@ -87,6 +87,15 @@ static bool bplist_write_int(uint8_t *out, size_t capacity, size_t *pos,
   return true;
 }
 
+static bool bplist_write_bool(uint8_t *out, size_t capacity, size_t *pos,
+                              bool value) {
+  if (!bplist_has_room(*pos, 1, capacity)) {
+    return false;
+  }
+  out[(*pos)++] = value ? 0x09 : 0x08;
+  return true;
+}
+
 static bool bplist_write_refs(uint8_t *out, size_t capacity, size_t *pos,
                               const uint8_t *refs, size_t count) {
   if (!bplist_has_room(*pos, count, capacity)) {
@@ -445,10 +454,12 @@ size_t bplist_build_feedback_response(uint8_t *out, size_t capacity,
 size_t bplist_build_info_response(uint8_t *out, size_t capacity,
                                   const char *device_id,
                                   const char *device_name,
+                                  const char *pairing_id,
                                   const uint8_t *public_key,
                                   size_t public_key_len, uint64_t features,
-                                  int64_t protocol_version) {
-  if (!out || !device_id || !device_name || !public_key ||
+                                  int64_t protocol_version,
+                                  uint32_t status_flags) {
+  if (!out || !device_id || !device_name || !pairing_id || !public_key ||
       public_key_len == 0 || capacity < 512) {
     return 0;
   }
@@ -524,7 +535,7 @@ size_t bplist_build_info_response(uint8_t *out, size_t capacity,
     return 0;
   }
   ADD_OFFSET(); // 13: statusFlags value
-  if (!bplist_write_int(out, capacity, &pos, 4)) {
+  if (!bplist_write_int(out, capacity, &pos, status_flags)) {
     return 0;
   }
   ADD_OFFSET(); // 14: "pk"
@@ -540,8 +551,7 @@ size_t bplist_build_info_response(uint8_t *out, size_t capacity,
     return 0;
   }
   ADD_OFFSET(); // 17: pairing identifier
-  if (!bplist_write_ascii_string(out, capacity, &pos,
-                                 "00000000-0000-0000-0000-000000000000")) {
+  if (!bplist_write_ascii_string(out, capacity, &pos, pairing_id)) {
     return 0;
   }
   ADD_OFFSET(); // 18: "name"
@@ -658,5 +668,60 @@ size_t bplist_build_info_response(uint8_t *out, size_t capacity,
     return 0;
   }
 
+  return pos;
+}
+
+size_t bplist_build_home_configure_response(
+    uint8_t *out, size_t capacity, const char *pairing_id,
+    const char *device_name, const uint8_t *public_key,
+    size_t public_key_len, bool home_access_enabled, uint8_t access_level) {
+  if (!out || !pairing_id || !device_name || !public_key ||
+      public_key_len == 0 || capacity < 256) {
+    return 0;
+  }
+
+  size_t pos = 0;
+  size_t offsets[11];
+  size_t obj = 0;
+  memcpy(out + pos, "bplist00", 8);
+  pos += 8;
+
+#define ADD_HOME_OBJECT(expr)       \
+  do {                              \
+    offsets[obj++] = pos;           \
+    if (!(expr)) {                  \
+      return 0;                     \
+    }                               \
+  } while (0)
+
+  ADD_HOME_OBJECT(
+      bplist_write_ascii_string(out, capacity, &pos, "Identifier"));
+  ADD_HOME_OBJECT(
+      bplist_write_ascii_string(out, capacity, &pos, pairing_id));
+  ADD_HOME_OBJECT(bplist_write_ascii_string(
+      out, capacity, &pos, "Enable_HK_Access_Control"));
+  ADD_HOME_OBJECT(
+      bplist_write_bool(out, capacity, &pos, home_access_enabled));
+  ADD_HOME_OBJECT(
+      bplist_write_ascii_string(out, capacity, &pos, "PublicKey"));
+  ADD_HOME_OBJECT(
+      bplist_write_data(out, capacity, &pos, public_key, public_key_len));
+  ADD_HOME_OBJECT(
+      bplist_write_ascii_string(out, capacity, &pos, "Device_Name"));
+  ADD_HOME_OBJECT(
+      bplist_write_ascii_string(out, capacity, &pos, device_name));
+  ADD_HOME_OBJECT(bplist_write_ascii_string(
+      out, capacity, &pos, "Access_Control_Level"));
+  ADD_HOME_OBJECT(bplist_write_int(out, capacity, &pos, access_level));
+
+  offsets[obj++] = pos;
+  const uint8_t keys[] = {0, 2, 4, 6, 8};
+  const uint8_t values[] = {1, 3, 5, 7, 9};
+  if (!bplist_write_dict(out, capacity, &pos, keys, values, 5) ||
+      !bplist_finish(out, capacity, &pos, offsets, obj, 10)) {
+    return 0;
+  }
+
+#undef ADD_HOME_OBJECT
   return pos;
 }

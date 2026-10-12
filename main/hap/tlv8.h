@@ -20,6 +20,13 @@
 #define TLV_TYPE_STATE          0x06
 #define TLV_TYPE_ERROR          0x07
 #define TLV_TYPE_SIGNATURE      0x0A
+#define TLV_TYPE_PERMISSIONS    0x0B
+#define TLV_TYPE_SEPARATOR      0xFF
+
+// Pairing management methods
+#define TLV_METHOD_ADD_PAIRING    0x03
+#define TLV_METHOD_REMOVE_PAIRING 0x04
+#define TLV_METHOD_LIST_PAIRINGS  0x05
 
 // HAP Error codes
 #define TLV_ERROR_UNKNOWN        0x01

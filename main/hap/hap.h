@@ -51,6 +51,13 @@ typedef struct {
   bool pair_setup_transient;
   bool session_established;
 
+  // Identity established by persistent pair-verify. A first controller may
+  // bootstrap itself with pair-add over a transient encrypted session.
+  uint8_t controller_identifier[64];
+  size_t controller_identifier_len;
+  uint8_t controller_permissions;
+  bool controller_authenticated;
+
   // SRP session for pair-setup
   struct srp_session *srp;
 } hap_session_t;
@@ -65,6 +72,9 @@ esp_err_t hap_init(void);
  * Get device's Ed25519 public key (for mDNS pk field)
  */
 const uint8_t *hap_get_public_key(void);
+
+/** Stable UUID used as the AirPlay/Home pairing identifier. */
+void hap_get_pairing_identifier(char *buffer, size_t buffer_len);
 
 /**
  * Create a new HAP session for a client connection
@@ -197,3 +207,18 @@ esp_err_t hap_pair_setup_m3(hap_session_t *session, const uint8_t *input,
 esp_err_t hap_pair_setup_m5(hap_session_t *session, const uint8_t *input,
                             size_t input_len, uint8_t *output,
                             size_t output_capacity, size_t *output_len);
+
+/** Handle HomeKit pairing management requests over an encrypted session. */
+esp_err_t hap_pair_add(hap_session_t *session, const uint8_t *input,
+                       size_t input_len, uint8_t *output,
+                       size_t output_capacity, size_t *output_len);
+esp_err_t hap_pair_remove(hap_session_t *session, const uint8_t *input,
+                          size_t input_len, uint8_t *output,
+                          size_t output_capacity, size_t *output_len);
+esp_err_t hap_pair_list(hap_session_t *session, const uint8_t *input,
+                        size_t input_len, uint8_t *output,
+                        size_t output_capacity, size_t *output_len);
+
+/** Persistent Home controller store helpers used by discovery and the UI. */
+size_t hap_pairing_count(void);
+esp_err_t hap_pairings_reset(void);

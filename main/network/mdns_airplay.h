@@ -10,3 +10,6 @@
  * With all required TXT records for iOS to recognize the device
  */
 void mdns_airplay_init(void);
+
+/** Refresh mDNS status flags after Home pairing state changes. */
+void mdns_airplay_update_pairing_status(void);

@@ -11,6 +11,9 @@
 # Documentation site output
 /site/
 
+# Firmware binaries are published as GitHub Release assets, not committed.
+/dist/*.bin
+
 # Local tooling artifacts (screenshots, browser traces)
 /output/
 managed_components/

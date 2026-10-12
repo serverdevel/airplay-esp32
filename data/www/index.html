@@ -99,6 +99,7 @@ input:focus{outline:none;border-color:#e94560}
 <div class='info-item'><label>Device Name</label><span id='info-name'>-</span></div>
 <div class='info-item'><label>Free Memory</label><span id='info-heap'>-</span></div>
 <div class='info-item'><label>Firmware</label><span id='info-fw'>-</span></div>
+<div class='info-item'><label>Apple Home</label><span id='info-home'>-</span></div>
 <div class='info-item'><label>Uptime</label><span id='info-uptime'>-</span></div>
 <div class='info-item'><label>Last reset</label><span id='info-reset'>-</span></div>
 <div class='info-item'><label>WiFi SSID</label><span id='info-ssid'>-</span></div>
@@ -107,7 +108,8 @@ input:focus{outline:none;border-color:#e94560}
 <div class='info-item'><label>WiFi PHY</label><span id='info-phy'>-</span></div>
 <div class='info-item' style='grid-column:1/-1'><label>WiFi BSSID</label><span id='info-bssid'>-</span></div>
 </div>
-<div class='actions'><button class='btn btn-danger' onclick='restart()'>Restart Device</button></div>
+<div class='actions'><button class='btn btn-danger' onclick='restart()'>Restart Device</button>
+<button class='btn btn-secondary' onclick='resetHome()'>Reset Home Pairing</button></div>
 </div>
 <div class='card'><h2>System Logs</h2>
 <p style='color:#888;font-size:13px;margin-bottom:12px'>Live ESP log output via WebSocket</p>
@@ -219,6 +221,11 @@ async function startOTA(){
 async function restart(){
   if(!confirm('Restart the device?'))return;
   try{await fetch('/api/system/restart',{method:'POST'});msg('','Restarting...','info');}catch(e){}}
+async function resetHome(){
+  if(!confirm('Remove all saved Apple Home controllers?\n\nFirst remove this speaker from the Home app if it is still listed there.'))return;
+  try{var r=await fetch('/api/home/reset',{method:'POST'});var d=await r.json();
+    if(d.success){alert('Home pairing cleared. You can add the speaker again.');loadInfo();}}
+  catch(e){alert('Could not clear Home pairing.');}}
 async function loadInfo(){
   try{var r=await fetch('/api/system/info');var d=await r.json();
     if(d.success){var i=d.info;var b=document.getElementById('status-bar');
@@ -230,6 +237,7 @@ async function loadInfo(){
       document.getElementById('info-name').textContent=i.device_name||'-';
       document.getElementById('info-heap').textContent=Math.round(i.free_heap/1024)+' KB';
       document.getElementById('info-fw').textContent=i.firmware_version||'-';
+      document.getElementById('info-home').textContent=i.home_paired?('Paired ('+i.home_controllers+')'):'Not paired';
       function fmtUptime(s){if(s==null)return '-';var d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);
         return (d?d+'d ':'')+(d||h?h+'h ':'')+m+'m '+(s%60)+'s';}
       document.getElementById('info-uptime').textContent=fmtUptime(i.uptime_s);

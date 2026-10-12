@@ -299,6 +299,14 @@ size_t bplist_build_feedback_response(uint8_t *out, size_t capacity,
 size_t bplist_build_info_response(uint8_t *out, size_t capacity,
                                   const char *device_id,
                                   const char *device_name,
+                                  const char *pairing_id,
                                   const uint8_t *public_key,
                                   size_t public_key_len, uint64_t features,
-                                  int64_t protocol_version);
+                                  int64_t protocol_version,
+                                  uint32_t status_flags);
+
+/** Build the AirPlay /configure response used when adding a speaker to Home. */
+size_t bplist_build_home_configure_response(
+    uint8_t *out, size_t capacity, const char *pairing_id,
+    const char *device_name, const uint8_t *public_key,
+    size_t public_key_len, bool home_access_enabled, uint8_t access_level);

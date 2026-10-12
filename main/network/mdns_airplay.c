@@ -1,9 +1,11 @@
 #include "esp_log.h"
 #include "esp_mac.h"
+#include "esp_app_desc.h"
 #include "mdns.h"
 #include <stdio.h>
 #include <string.h>
 
+#include "base64.h"
 #include "hap.h"
 #include "mdns_airplay.h"
 #include "rtsp_handlers.h"
@@ -26,8 +28,20 @@ static const char *TAG = "mdns_airplay";
 #endif
 #define AIRPLAY_SOURCE_VERSION "377.40.00"
 
-// Flags: 0x4 = audio receiver
-#define AIRPLAY_FLAGS "0x4"
+// Status bit 2 = audio link; bit 10 = configured for Home access control.
+#define AIRPLAY_FLAG_AUDIO_LINK 0x0004u
+#define AIRPLAY_FLAG_HOME_ACL   0x0400u
+
+static char s_status_flags[12] = "0x4";
+static bool s_mdns_started;
+
+static void format_status_flags(void) {
+  unsigned flags = AIRPLAY_FLAG_AUDIO_LINK;
+  if (hap_pairing_count() > 0) {
+    flags |= AIRPLAY_FLAG_HOME_ACL;
+  }
+  snprintf(s_status_flags, sizeof(s_status_flags), "0x%X", flags);
+}
 
 // Metadata types advertised in the "md" txt record:
 //   0 = text (track title/artist/album), 1 = artwork (cover art images),
@@ -41,9 +55,35 @@ static const char *TAG = "mdns_airplay";
 #define AIRPLAY_METADATA_TYPES "0,2"
 #endif
 
-// Model identifier - AudioAccessory for speaker appearance
-// AppleTV3,2 = Apple TV, AudioAccessory5,1 = HomePod mini (speaker)
-#define AIRPLAY_MODEL "AudioAccessory5,1"
+// Do not impersonate a HomePod here. Recent Home versions apply Apple's
+// HomePod-specific provisioning rules to AudioAccessory model identifiers and
+// may hide a third-party receiver from the manual accessory picker.
+#define AIRPLAY_MODEL "AirPlay2-Receiver"
+
+static void make_related_uuid(const char *pairing_id, char prefix,
+                              char output[37]) {
+  strlcpy(output, pairing_id, 37);
+  output[0] = prefix;
+}
+
+static void format_extended_features(char output[16]) {
+  uint64_t features = ((uint64_t)AIRPLAY_FEATURES_HI << 32) |
+                      (uint64_t)AIRPLAY_FEATURES_LO;
+  uint8_t little_endian[8];
+  for (size_t i = 0; i < sizeof(little_endian); i++) {
+    little_endian[i] = (uint8_t)(features >> (i * 8));
+  }
+
+  int len = base64_encode(little_endian, sizeof(little_endian), output, 15);
+  if (len < 0) {
+    output[0] = '\0';
+    return;
+  }
+  while (len > 0 && output[len - 1] == '=') {
+    len--;
+  }
+  output[len] = '\0';
+}
 
 void mdns_airplay_init(void) {
   char mac_str[18];
@@ -53,6 +93,10 @@ void mdns_airplay_init(void) {
   char pk_str[65]; // 32 bytes = 64 hex chars + null
   char device_name[65];
   char hostname[MDNS_HOSTNAME_MAX_LEN + 1];
+  char pairing_id[37];
+  char system_id[37];
+  char group_id[37];
+  char extended_features[16];
 
   // Get device name from settings. This is the user-facing name and stays
   // UTF-8 for the service instance names below; only the hostname is
@@ -66,6 +110,11 @@ void mdns_airplay_init(void) {
 
   // Get real Ed25519 public key from HAP module
   const uint8_t *pk = hap_get_public_key();
+  hap_get_pairing_identifier(pairing_id, sizeof(pairing_id));
+  make_related_uuid(pairing_id, 'B', system_id);
+  make_related_uuid(pairing_id, 'C', group_id);
+  format_extended_features(extended_features);
+  format_status_flags();
   for (int i = 0; i < 32; i++) {
     snprintf(pk_str + (size_t)i * 2, 3, "%02x", pk[i]);
   }
@@ -100,15 +149,26 @@ void mdns_airplay_init(void) {
   // Only registered for AirPlay 2 mode
   // ========================================
   mdns_txt_item_t airplay_txt[] = {
+      {"acl", "0"},
       {"deviceid", device_id},
+      {"fex", extended_features},
       {"features", features_str},
-      {"flags", AIRPLAY_FLAGS},
+      {"flags", s_status_flags},
+      {"gcgl", "0"},
+      {"gid", group_id},
+      {"igl", "0"},
+      {"manufacturer", "OpenAirplay"},
       {"model", AIRPLAY_MODEL},
       {"pk", pk_str},
-      {"pi", "00000000-0000-0000-0000-000000000000"}, // Pairing identity UUID
+      {"pi", pairing_id},
+      {"protovers", "1.1"},
+      {"psi", system_id},
+      {"rsf", "0x0"},
+      {"serialNumber", device_id},
       {"srcvers", AIRPLAY_SOURCE_VERSION},
       {"vv", AIRPLAY_PROTOCOL_VERSION},
-      {"acl", "0"},
+      {"osvers", "15.0"},
+      {"fv", esp_app_get_description()->version},
   };
 
   esp_err_t err =
@@ -118,6 +178,10 @@ void mdns_airplay_init(void) {
     ESP_LOGE(TAG, "Failed to add _airplay._tcp service: %s",
              esp_err_to_name(err));
   }
+  ESP_LOGI(TAG,
+           "AirPlay TXT: model=%s features=%s flags=%s pi=%s fex=%s",
+           AIRPLAY_MODEL, features_str, s_status_flags, pairing_id,
+           extended_features);
 #endif
 
   // ========================================
@@ -157,7 +221,7 @@ void mdns_airplay_init(void) {
       {"ft", features_str},           // Features (same as airplay)
       {"md", AIRPLAY_METADATA_TYPES}, // Metadata types
       {"pk", pk_str},                 // Public key
-      {"sf", AIRPLAY_FLAGS},          // Status flags
+      {"sf", s_status_flags},         // Status flags
       {"tp", "UDP"},                  // Transport protocol
       {"vn", "65537"},                // Version number
       {"vs", AIRPLAY_SOURCE_VERSION},
@@ -170,6 +234,28 @@ void mdns_airplay_init(void) {
                        sizeof(raop_txt) / sizeof(raop_txt[0]));
   if (err_raop != ESP_OK) {
     ESP_LOGE(TAG, "Failed to add _raop._tcp service: %s",
+             esp_err_to_name(err_raop));
+  }
+  s_mdns_started = true;
+}
+
+void mdns_airplay_update_pairing_status(void) {
+  format_status_flags();
+  if (!s_mdns_started) {
+    return;
+  }
+#ifndef CONFIG_AIRPLAY_FORCE_V1
+  esp_err_t err = mdns_service_txt_item_set("_airplay", "_tcp", "flags",
+                                             s_status_flags);
+  if (err != ESP_OK) {
+    ESP_LOGW(TAG, "Failed to update AirPlay pairing flag: %s",
+             esp_err_to_name(err));
+  }
+#endif
+  esp_err_t err_raop =
+      mdns_service_txt_item_set("_raop", "_tcp", "sf", s_status_flags);
+  if (err_raop != ESP_OK) {
+    ESP_LOGW(TAG, "Failed to update RAOP pairing flag: %s",
              esp_err_to_name(err_raop));
   }
 }

@@ -2,10 +2,10 @@
 
 #include "hap.h"
 #include "hap_internal.h"
+#include "hap_pairings.h"
 #include "tlv8.h"
 
 #include "esp_log.h"
-#include "esp_mac.h"
 #include "mbedtls/aes.h"
 #include "sodium.h"
 
@@ -38,12 +38,9 @@ esp_err_t hap_pair_verify_m1(hap_session_t *session, const uint8_t *input,
     return ESP_FAIL;
   }
 
-  uint8_t mac[6];
-  esp_read_mac(mac, ESP_MAC_WIFI_STA);
-  char device_id[18];
-  snprintf(device_id, sizeof(device_id), "%02X:%02X:%02X:%02X:%02X:%02X",
-           mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-  size_t device_id_len = 17;
+  char device_id[37];
+  hap_get_pairing_identifier(device_id, sizeof(device_id));
+  size_t device_id_len = strlen(device_id);
 
   uint8_t accessory_info[128];
   size_t accessory_info_len = 0;
@@ -127,7 +124,65 @@ esp_err_t hap_pair_verify_m3(hap_session_t *session, const uint8_t *input,
     tlv8_encode_byte(&enc, TLV_TYPE_STATE, PAIR_VERIFY_STATE_M4);
     tlv8_encode_byte(&enc, TLV_TYPE_ERROR, TLV_ERROR_AUTHENTICATION);
     *output_len = tlv8_encoder_size(&enc);
-    return ESP_ERR_INVALID_STATE;
+    return ESP_OK;
+  }
+
+  uint8_t controller_id[HAP_PAIRING_ID_MAX];
+  uint8_t controller_signature[crypto_sign_BYTES];
+  size_t controller_id_len = 0;
+  size_t controller_signature_len = 0;
+  if (!tlv8_decode_concat(decrypted, (size_t)decrypted_len,
+                          TLV_TYPE_IDENTIFIER, controller_id,
+                          sizeof(controller_id), &controller_id_len) ||
+      !tlv8_decode_concat(decrypted, (size_t)decrypted_len,
+                          TLV_TYPE_SIGNATURE, controller_signature,
+                          sizeof(controller_signature),
+                          &controller_signature_len) ||
+      controller_id_len == 0 ||
+      controller_signature_len != sizeof(controller_signature)) {
+    ESP_LOGE(TAG, "M3 is missing controller identity or signature");
+    tlv8_encoder_t enc;
+    tlv8_encoder_init(&enc, output, output_capacity);
+    tlv8_encode_byte(&enc, TLV_TYPE_STATE, PAIR_VERIFY_STATE_M4);
+    tlv8_encode_byte(&enc, TLV_TYPE_ERROR, TLV_ERROR_AUTHENTICATION);
+    *output_len = tlv8_encoder_size(&enc);
+    return ESP_OK;
+  }
+
+  hap_pairing_t pairing;
+  if (!hap_pairings_get(controller_id, controller_id_len, &pairing)) {
+    ESP_LOGW(TAG, "Pair-verify from an unknown Home controller");
+    tlv8_encoder_t enc;
+    tlv8_encoder_init(&enc, output, output_capacity);
+    tlv8_encode_byte(&enc, TLV_TYPE_STATE, PAIR_VERIFY_STATE_M4);
+    tlv8_encode_byte(&enc, TLV_TYPE_ERROR, TLV_ERROR_AUTHENTICATION);
+    *output_len = tlv8_encoder_size(&enc);
+    return ESP_OK;
+  }
+
+  uint8_t controller_info[HAP_X25519_KEY_SIZE + HAP_PAIRING_ID_MAX +
+                          HAP_X25519_KEY_SIZE];
+  size_t controller_info_len = 0;
+  memcpy(controller_info + controller_info_len, session->client_public_key,
+         HAP_X25519_KEY_SIZE);
+  controller_info_len += HAP_X25519_KEY_SIZE;
+  memcpy(controller_info + controller_info_len, controller_id,
+         controller_id_len);
+  controller_info_len += controller_id_len;
+  memcpy(controller_info + controller_info_len, session->session_public_key,
+         HAP_X25519_KEY_SIZE);
+  controller_info_len += HAP_X25519_KEY_SIZE;
+
+  if (crypto_sign_verify_detached(controller_signature, controller_info,
+                                  controller_info_len,
+                                  pairing.public_key) != 0) {
+    ESP_LOGW(TAG, "Invalid Home controller signature");
+    tlv8_encoder_t enc;
+    tlv8_encoder_init(&enc, output, output_capacity);
+    tlv8_encode_byte(&enc, TLV_TYPE_STATE, PAIR_VERIFY_STATE_M4);
+    tlv8_encode_byte(&enc, TLV_TYPE_ERROR, TLV_ERROR_AUTHENTICATION);
+    *output_len = tlv8_encoder_size(&enc);
+    return ESP_OK;
   }
 
   hap_hkdf_sha512((uint8_t *)"Control-Salt", 12, session->shared_secret,
@@ -146,6 +201,12 @@ esp_err_t hap_pair_verify_m3(hap_session_t *session, const uint8_t *input,
   *output_len = tlv8_encoder_size(&enc);
   session->pair_verify_state = PAIR_VERIFY_STATE_M4;
   session->session_established = true;
+  memcpy(session->controller_identifier, controller_id, controller_id_len);
+  session->controller_identifier_len = controller_id_len;
+  session->controller_permissions = pairing.permissions;
+  session->controller_authenticated = true;
+
+  ESP_LOGI(TAG, "Persistent Home controller verified");
 
   return ESP_OK;
 }

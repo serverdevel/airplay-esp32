@@ -20,6 +20,8 @@
 #include "log_stream.h"
 #include "rtsp_server.h"
 #include "audio_output.h"
+#include "hap.h"
+#include "mdns_airplay.h"
 #include "esp_app_desc.h"
 #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
@@ -951,6 +953,8 @@ static esp_err_t system_info_handler(httpd_req_t *req) {
   cJSON_AddBoolToObject(info, "wifi_connected", wifi_connected);
   cJSON_AddBoolToObject(info, "eth_connected", eth_connected);
   cJSON_AddNumberToObject(info, "free_heap", esp_get_free_heap_size());
+  cJSON_AddBoolToObject(info, "home_paired", hap_pairing_count() > 0);
+  cJSON_AddNumberToObject(info, "home_controllers", hap_pairing_count());
 
   // WiFi link diagnostics (only meaningful when associated as STA)
   if (wifi_connected) {
@@ -1032,6 +1036,26 @@ static esp_err_t system_restart_handler(httpd_req_t *req) {
   vTaskDelay(pdMS_TO_TICKS(500));
   esp_restart();
 
+  return ESP_OK;
+}
+
+static esp_err_t home_reset_handler(httpd_req_t *req) {
+  esp_err_t err = hap_pairings_reset();
+  if (err != ESP_OK) {
+    httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR,
+                        "Failed to clear Home pairings");
+    return err;
+  }
+
+  mdns_airplay_update_pairing_status();
+  cJSON *json = cJSON_CreateObject();
+  cJSON_AddBoolToObject(json, "success", true);
+  char *json_str = cJSON_PrintUnformatted(json);
+  httpd_resp_set_type(req, "application/json");
+  httpd_resp_send(req, json_str, HTTPD_RESP_USE_STRLEN);
+  free(json_str);
+  cJSON_Delete(json);
+  ESP_LOGW(TAG, "All persistent Home pairings were cleared");
   return ESP_OK;
 }
 
@@ -1307,7 +1331,7 @@ esp_err_t web_server_start(uint16_t port) {
 #endif
   config.lru_purge_enable = true; // Reclaim stale sockets when all are in use
   config.max_uri_handlers =
-      30; // Room for captive portal + EQ + speedtest + brightness + channel
+      31; // Room for captive portal + Home + EQ + speedtest + audio settings
 #ifdef DAC_HAS_SUB_OFFSET
   config.max_uri_handlers += 2; // sub level get/post
 #endif
@@ -1441,6 +1465,11 @@ esp_err_t web_server_start(uint16_t port) {
                                     .method = HTTP_POST,
                                     .handler = system_restart_handler};
   httpd_register_uri_handler(s_server, &system_restart_uri);
+
+  httpd_uri_t home_reset_uri = {.uri = "/api/home/reset",
+                                .method = HTTP_POST,
+                                .handler = home_reset_handler};
+  httpd_register_uri_handler(s_server, &home_reset_uri);
 
   // File management API
   httpd_uri_t fs_upload_uri = {.uri = "/api/fs/upload",
