@@ -106,8 +106,12 @@ source build for one of them.
 ## Features
 
 - **AirPlay 2** — appears natively in Control Center and every AirPlay-capable app
+- **Apple Home integration** — add the receiver to the Home app, transfer playback from
+  a HomePod and keep the pairing after a reboot
 - **ALAC and AAC decoding** — handles both live streaming (Siri, calls) and music playback
 - **Multi-room** — PTP-based timing for synchronised playback across devices
+- **Acoustic sync compensation** — adjust the receiver by −1000 to +1000 ms from the
+  web interface to align it with a HomePod; changes apply live and remain saved
 - **Web configuration** — set WiFi and device name from a browser
 - **OTA updates** — update over WiFi; USB is only needed for the first flash
 - **48 kHz output** — optional 44.1 → 48 kHz conversion for DACs and S/PDIF receivers that need it
