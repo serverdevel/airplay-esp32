@@ -2,7 +2,9 @@
 
 # Build environments
 
-Every PlatformIO environment defined in `platformio.ini`. The default is `esp32s3`.
+Every PlatformIO environment defined in `platformio.ini`. Only `esp32s3` — ESP32-S3
+N16R8 with PCM5102A — is built, tested and published by this fork. Every other entry on
+this page is an inherited, unverified source profile with no release image.
 
 ## Generic boards
 
@@ -80,7 +82,7 @@ These have sdkconfig defaults and are built through ESP-IDF directly.
 
 | Target | Sdkconfig | Status |
 | --- | --- | --- |
-| ESP32-S2 | `config/sdkconfig.defaults.esp32s2` | Built in CI, prebuilt binary published |
+| ESP32-S2 | `config/sdkconfig.defaults.esp32s2` | Inherited and unverified; no release image |
 | ESP32-P4 | `config/sdkconfig.defaults.esp32p4` | Experimental |
 
 ```bash
@@ -88,33 +90,14 @@ idf.py set-target esp32s2
 idf.py -DSDKCONFIG_DEFAULTS="config/sdkconfig.defaults;config/sdkconfig.defaults.esp32s2" build
 ```
 
-## Which builds get a prebuilt binary
+## Published release image
 
-CI builds a subset of environments and attaches them to each release. These are the ones
-available in the [browser installer](../getting-started/flashing.md):
+The release workflow builds only **`esp32s3`**. The browser installer exposes only the
+matching `docs/firmware/esp32s3.json` manifest. Stable releases and beta builds must not
+publish any other board profile.
 
-`esp32s3`, `waveshare-esp32s3`, `esp32s2`, `squeezeamp-bt`, `squeezeamp-4m`, `smartamp`,
-`esparagus-audio-brick-bt`, `esparagus-audio-brick-s3`, `esparagus-audio-brick-dual-dac`,
-`esparagus-audio-brick-dual-uac`, `esparagus-louder-bt`, `esparagus-louder-s3`,
-`esparagus-echo`, `hifi-esp32-bt`, `hifi-esparagus-bt`, `hifi-esp32-s3`,
-`hifi-esparagus-s3`, `loud-esp32-bt`, `loud-esparagus-bt`, `loud-esp32-s3`,
-`amped-esp32-bt`, `amped-esparagus-bt`, `amped-esp32-s3`, `louder-esp32-bt`,
-`louder-esp32-plus-bt`, `louder-esp32-s3`, `louder-esp32-s3-plus`.
-
-The list lives in `.github/workflows/targets.json`, and each entry needs a matching
-`docs/firmware/<name>.json` manifest for the installer to offer it.
-
-Everything else you build yourself. On an ESP32 board that can do Bluetooth the published
-binary always includes it, so there is no prebuilt `squeezeamp`, `esparagus-audio-brick`,
-`esparagus-louder`, `hifi-esp32`, `loud-esp32`, `amped-esp32` or `louder-esp32` — build
-one of those yourself if you want the RAM and flash back.
-
-The same list runs on every push to `staging` and publishes a rolling
-[beta](../getting-started/flashing.md#beta-builds) pre-release, so each of these boards
-has an untested build of the current development tip available too. A pull request builds
-only the entries flagged `"core": true`, which cover every chip and every board support
-directory without a job per variant, and the matrix does not fail fast, so one board
-failing to compile no longer stops the others being published.
+All other environments are retained solely for upstream reference and manual porting.
+Successful compilation, if it occurs, does not make a profile supported.
 
 ## How sdkconfig layering works
 

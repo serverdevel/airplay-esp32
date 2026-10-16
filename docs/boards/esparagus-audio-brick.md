@@ -2,6 +2,12 @@
 
 # Esparagus Audio Brick
 
+!!! warning "Inherited and unverified profile"
+
+    This page documents source code inherited from the upstream project. This fork does
+    not test this hardware, publish a ready-to-flash image for it or provide official
+    support. Build and validate it yourself at your own risk.
+
 The [Esparagus Audio Brick](https://github.com/sonocotta/esparagus-media-center/?tab=readme-ov-file#esparagus-audio-brick-prototype)
 is built around a TI **TAS5825M** Class-D DAC and amplifier. Like the SqueezeAMP, it
 needs no external DAC — connect speakers directly.
@@ -28,11 +34,9 @@ family and the same driver, but it is not the same part: see
 
 ## Flashing
 
-=== "Browser"
+=== "Release image"
 
-    Use the Esparagus Audio Brick installer on the
-    [flashing page](../getting-started/flashing.md). The published binary is the
-    Bluetooth + Ethernet build.
+    No release image is published by this fork. Build and validate this profile yourself.
 
 === "PlatformIO"
 
@@ -291,17 +295,15 @@ page expects them.
 
 ## Variants
 
-| Environment | Chip | Bluetooth | Prebuilt | Notes |
+| Environment | Chip | Bluetooth | Release image | Notes |
 | --- | --- | :-: | :-: | --- |
 | `esparagus-audio-brick` | ESP32 | — | — | AirPlay + Ethernet |
-| `esparagus-audio-brick-bt` | ESP32 | yes | yes | Adds Bluetooth A2DP |
-| `esparagus-audio-brick-s3` | ESP32-S3 | — | yes | S3 pinout, PSRAM, no Bluetooth Classic on this chip |
-| `esparagus-audio-brick-dual-dac` | ESP32-S3 | — | yes | [Dual](esparagus-audio-brick-dual-dac.md), two amplifiers: stereo at 0x4C, second at 0x4D |
-| `esparagus-audio-brick-dual-uac` | ESP32-S3 | — | yes | [Dual](esparagus-audio-brick-dual-dac.md) as a USB audio device |
+| `esparagus-audio-brick-bt` | ESP32 | yes | — | Adds Bluetooth A2DP |
+| `esparagus-audio-brick-s3` | ESP32-S3 | — | — | S3 pinout, PSRAM, no Bluetooth Classic on this chip |
+| `esparagus-audio-brick-dual-dac` | ESP32-S3 | — | — | [Dual](esparagus-audio-brick-dual-dac.md), two amplifiers: stereo at 0x4C, second at 0x4D |
+| `esparagus-audio-brick-dual-uac` | ESP32-S3 | — | — | [Dual](esparagus-audio-brick-dual-dac.md) as a USB audio device |
 
-The ones marked prebuilt are in the
-[browser installer](../getting-started/flashing.md). On the ESP32 the published binary is
-the Bluetooth one, so build `esparagus-audio-brick` yourself if you want that RAM back.
+No variant in this table is published or tested by this fork.
 
 Bluetooth Classic exists only on the original ESP32, so the `-bt` build has no S3
 equivalent; an S3 brick reaches the network over Ethernet or WiFi. The Dual has two
@@ -311,11 +313,11 @@ amplifiers and a pinout of its own, and gets [its own page](esparagus-audio-bric
 
 The Esparagus Louder is the same amplifier design on a board of its own.
 
-| Environment | Chip | Bluetooth | Prebuilt |
+| Environment | Chip | Bluetooth | Release image |
 | --- | --- | :-: | :-: |
 | `esparagus-louder` | ESP32 | — | — |
-| `esparagus-louder-bt` | ESP32 | yes | yes |
-| `esparagus-louder-s3` | ESP32-S3 | — | yes |
+| `esparagus-louder-bt` | ESP32 | yes | — |
+| `esparagus-louder-s3` | ESP32-S3 | — | — |
 
 ```bash
 pio run -e esparagus-louder-s3 -t upload

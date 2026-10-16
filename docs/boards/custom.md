@@ -2,6 +2,12 @@
 
 # Custom board configuration
 
+!!! warning "Inherited and unverified profile"
+
+    This page documents source code inherited from the upstream project. This fork does
+    not test this hardware, publish a ready-to-flash image for it or provide official
+    support. Build and validate it yourself at your own risk.
+
 If you are porting to your own hardware, you can define a custom build environment without
 touching `platformio.ini`. Create a **`user_platformio.ini`** file — the main config
 already pulls it in via `extra_configs`, so PlatformIO picks it up automatically.

@@ -3,12 +3,12 @@
 # reverting to mkdocs + mkdocs-material needs no changes to this file.
 site_name: ESP32 AirPlay 2 Receiver
 site_description: >-
-  Turn a cheap ESP32 board into a wireless AirPlay 2 speaker.
-  ALAC and AAC decoding, Bluetooth A2DP, Ethernet, displays and OTA updates.
-site_url: https://rbouteiller.github.io/airplay-esp32/
-repo_url: https://github.com/rbouteiller/airplay-esp32
-repo_name: rbouteiller/airplay-esp32
-edit_uri: edit/main/docs/
+  Turn an ESP32-S3 N16R8 and PCM5102A DAC into a wireless AirPlay 2 receiver.
+  ALAC and AAC decoding, HomeKit pairing, multi-room audio and OTA updates.
+site_url: https://serverdevel.github.io/airplay-esp32/
+repo_url: https://github.com/serverdevel/airplay-esp32
+repo_name: serverdevel/airplay-esp32
+edit_uri: edit/homekit-0.2.1.4/docs/
 copyright: Non-commercial use only. Not affiliated with Apple Inc.
 
 theme:
@@ -92,7 +92,7 @@ extra_javascript:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/rbouteiller/airplay-esp32
+      link: https://github.com/serverdevel/airplay-esp32
 
 # Broken internal links fail the build so docs cannot silently rot.
 strict: true
@@ -105,18 +105,19 @@ nav:
       - Assembly: getting-started/assembly.md
       - Flash the firmware: getting-started/flashing.md
       - First boot: getting-started/first-boot.md
-  - Boards:
-      - boards/index.md
-      - ESP32-S3 + PCM5102A: boards/esp32s3-pcm5102a.md
-      - SqueezeAMP: boards/squeezeamp.md
-      - Esparagus Audio Brick: boards/esparagus-audio-brick.md
-      - Esparagus Audio Brick Dual: boards/esparagus-audio-brick-dual-dac.md
-      - HiFi-ESP32: boards/hifi-esp32.md
-      - Loud-ESP32 and Esparagus Echo: boards/loud-esp32.md
-      - Amped-ESP32: boards/amped-esp32.md
-      - Louder-ESP32: boards/louder-esp32.md
-      - Seeed XIAO ESP32-C5: boards/xiao-esp32c5.md
-      - Custom board: boards/custom.md
+  - Hardware:
+      - Support status: boards/index.md
+      - ESP32-S3 N16R8 + PCM5102A: boards/esp32s3-pcm5102a.md
+      - Inherited profiles (unverified):
+          - SqueezeAMP: boards/squeezeamp.md
+          - Esparagus Audio Brick: boards/esparagus-audio-brick.md
+          - Esparagus Audio Brick Dual: boards/esparagus-audio-brick-dual-dac.md
+          - HiFi-ESP32: boards/hifi-esp32.md
+          - Loud-ESP32 and Esparagus Echo: boards/loud-esp32.md
+          - Amped-ESP32: boards/amped-esp32.md
+          - Louder-ESP32: boards/louder-esp32.md
+          - Seeed XIAO ESP32-C5: boards/xiao-esp32c5.md
+          - Custom board: boards/custom.md
   - Features:
       - Bluetooth A2DP: features/bluetooth.md
       - USB audio (UAC): features/usb-audio.md
@@ -142,18 +143,19 @@ nav:
           - Сборка: ru/getting-started/assembly.md
           - Установка прошивки: ru/getting-started/flashing.md
           - Первый запуск: ru/getting-started/first-boot.md
-      - Платы:
-          - ru/boards/index.md
-          - ESP32-S3 + PCM5102A: ru/boards/esp32s3-pcm5102a.md
-          - SqueezeAMP: ru/boards/squeezeamp.md
-          - Esparagus Audio Brick: ru/boards/esparagus-audio-brick.md
-          - Esparagus Audio Brick Dual: ru/boards/esparagus-audio-brick-dual-dac.md
-          - HiFi-ESP32: ru/boards/hifi-esp32.md
-          - Loud-ESP32 и Esparagus Echo: ru/boards/loud-esp32.md
-          - Amped-ESP32: ru/boards/amped-esp32.md
-          - Louder-ESP32: ru/boards/louder-esp32.md
-          - Seeed XIAO ESP32-C5: ru/boards/xiao-esp32c5.md
-          - Пользовательская плата: ru/boards/custom.md
+      - Оборудование:
+          - Статус поддержки: ru/boards/index.md
+          - ESP32-S3 N16R8 + PCM5102A: ru/boards/esp32s3-pcm5102a.md
+          - Унаследованные профили (не проверены):
+              - SqueezeAMP: ru/boards/squeezeamp.md
+              - Esparagus Audio Brick: ru/boards/esparagus-audio-brick.md
+              - Esparagus Audio Brick Dual: ru/boards/esparagus-audio-brick-dual-dac.md
+              - HiFi-ESP32: ru/boards/hifi-esp32.md
+              - Loud-ESP32 и Esparagus Echo: ru/boards/loud-esp32.md
+              - Amped-ESP32: ru/boards/amped-esp32.md
+              - Louder-ESP32: ru/boards/louder-esp32.md
+              - Seeed XIAO ESP32-C5: ru/boards/xiao-esp32c5.md
+              - Пользовательская плата: ru/boards/custom.md
       - Возможности:
           - Bluetooth A2DP: ru/features/bluetooth.md
           - USB-аудио (UAC): ru/features/usb-audio.md

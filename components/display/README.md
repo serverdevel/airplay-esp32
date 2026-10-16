@@ -15,7 +15,10 @@ When the display is disabled (`CONFIG_DISPLAY_ENABLED=n`), only `display_stub.c`
 
 ### OLED (u8g2)
 
-Compatible with all supported targets — ESP32, ESP32-S3, WROOM, Wrover, SqueezeAMP, Esparagus Audio Brick. No special memory requirements.
+The driver code can be compiled by several inherited source profiles, including ESP32,
+ESP32-S3, WROOM, Wrover, SqueezeAMP and Esparagus Audio Brick. In this fork, only the
+ESP32-S3 N16R8 + PCM5102A release target is supported and tested. OLED support is optional
+and is not enabled in the published image by default.
 
 ### ST7789 TFT (LVGL 9)
 

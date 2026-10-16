@@ -101,10 +101,9 @@ jobs:
           fi
           echo "All files pass clang-tidy checks"
 
-  # The release matrix in build.yml only covers I2S/DAC boards, so a backend
-  # that misses part of the audio_output API links fine there and breaks only
-  # for whoever selects it. These configurations ship no firmware artifact;
-  # they exist to keep every backend linking.
+  # The release build covers only the supported ESP32-S3 N16R8 + PCM5102A
+  # target. These extra configurations publish no artifact; they exist only to
+  # keep the alternative output backends compiling.
   output-backends:
     needs: [format-check, lint-check]
     runs-on: ubuntu-latest

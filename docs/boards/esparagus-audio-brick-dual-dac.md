@@ -2,6 +2,12 @@
 
 # Esparagus Audio Brick Dual
 
+!!! warning "Inherited and unverified profile"
+
+    This page documents source code inherited from the upstream project. This fork does
+    not test this hardware, publish a ready-to-flash image for it or provide official
+    support. Build and validate it yourself at your own risk.
+
 The **Audio Brick Dual** is an **ESP32-S3** [Esparagus Audio Brick](esparagus-audio-brick.md)
 carrying **two** Class-D amplifiers on one I2S bus. As on every brick, each is either a
 TAS5825M or a TAS5805M and the driver detects which at startup.
@@ -43,8 +49,7 @@ idf.py -DSDKCONFIG_DEFAULTS="config/sdkconfig.defaults;config/sdkconfig.defaults
 idf.py -p /dev/ttyUSB0 flash
 ```
 
-Both variants also have a prebuilt binary in the
-[browser installer](../getting-started/flashing.md).
+This fork does not publish a release image for either variant.
 
 ## Default GPIO assignments
 

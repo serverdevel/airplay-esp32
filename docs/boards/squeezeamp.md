@@ -2,16 +2,21 @@
 
 # SqueezeAMP
 
+!!! warning "Inherited and unverified profile"
+
+    This page documents source code inherited from the upstream project. This fork does
+    not test this hardware, publish a ready-to-flash image for it or provide official
+    support. Build and validate it yourself at your own risk.
+
 The [SqueezeAMP](https://github.com/philippe44/SqueezeAMP) is an ESP32 board with a
 TAS575xx (combined DAC and Class-D amplifier). Connect speakers
 directly to the board.
 
 ## Flashing
 
-=== "Browser"
+=== "Release image"
 
-    Use the SqueezeAMP installer on the [flashing page](../getting-started/flashing.md).
-    Prebuilt binaries exist for the Bluetooth build and the 4 MB variant.
+    No release image is published by this fork. Build and validate this profile yourself.
 
 === "PlatformIO"
 
@@ -41,8 +46,8 @@ directly to the board.
 | Environment | Flash | Bluetooth | Notes |
 | --- | --- | :-: | --- |
 | `squeezeamp` | 8 MB | — | AirPlay only |
-| `squeezeamp-bt` | 8 MB | yes | Prebuilt binary published |
-| `squeezeamp-4m` | 4 MB | — | Smaller partition table, prebuilt binary published |
+| `squeezeamp-bt` | 8 MB | yes | No release image |
+| `squeezeamp-4m` | 4 MB | — | Smaller partition table; no release image |
 
 Bluetooth does not fit alongside AirPlay in 4 MB of flash, which is why there is no
 `squeezeamp-4m-bt`.

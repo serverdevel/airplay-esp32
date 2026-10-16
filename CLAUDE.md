@@ -4,7 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-ESP32 AirPlay 2 Receiver — firmware that turns ESP32/ESP32-S3/ESP32-P4 boards into AirPlay 2 speakers. Supports ALAC and AAC decoding, Bluetooth A2DP (ESP32 only), W5500 Ethernet (Esparagus Audio Brick), OLED/TFT displays, hardware buttons, and OTA updates.
+ESP32 AirPlay 2 Receiver. This fork's only supported, tested and published target is an
+ESP32-S3 N16R8 (16 MB flash, 8 MB octal PSRAM) with an external PCM5102A DAC. The source
+tree still contains inherited upstream profiles for other chips and audio boards; treat
+them as unverified porting references, not as supported hardware.
 
 ## Build & Flash
 
@@ -20,8 +23,8 @@ pio run -e <env> -t menuconfig      # Kconfig configuration
 **ESP-IDF** (native):
 ```bash
 source /path/to/esp-idf/export.sh
-idf.py set-target esp32s3           # or esp32, esp32p4
-idf.py build
+idf.py set-target esp32s3
+idf.py -DSDKCONFIG_DEFAULTS="config/sdkconfig.defaults;config/sdkconfig.defaults.esp32s3" build
 idf.py -p /dev/ttyUSB0 flash
 idf.py -p /dev/ttyUSB0 monitor
 ```
@@ -30,7 +33,7 @@ idf.py -p /dev/ttyUSB0 monitor
 
 | Environment | Board | Notes |
 |---|---|---|
-| `esp32s3` | ESP32-S3 + external DAC (e.g. PCM5102A) | Default |
+| `esp32s3` | ESP32-S3 N16R8 + PCM5102A | **Supported release target** |
 | `esp32s3-jtag` | ESP32-S3 with JTAG | Extends esp32s3 |
 | `squeezeamp` | ESP32 + TAS5756 DAC/amp | 8MB flash |
 | `squeezeamp-bt` | Same + Bluetooth A2DP | |
@@ -44,6 +47,10 @@ idf.py -p /dev/ttyUSB0 monitor
 | `esparagus-louder-s3` | ESP32-S3 + Louder | |
 
 Board configs live in `config/` (the generated `sdkconfig` stays at the project root). Sdkconfig defaults are layered via `cmake_extra_args` (left-to-right override). Custom board config: create `config/sdkconfig.user.<name>` + `user_platformio.ini` to extend any environment without modifying the main config.
+
+Every environment other than `esp32s3` in the table above is inherited and unverified in
+this fork. Do not add it to the release workflow or browser installer without real-hardware
+validation and a corresponding documentation update.
 
 ## Architecture
 
@@ -129,7 +136,7 @@ components/
 
 ## Code Quality
 
-**Requirements**: ESP-IDF >= 5.5 (tested against v5.5.2). Older versions may need workarounds.
+**Requirements**: ESP-IDF >= 5.5.5. Older versions may need workarounds.
 
 **Formatting**: LLVM-style, 2-space indent, 80-char column limit. See `.clang-format`.
 
@@ -137,11 +144,12 @@ components/
 
 **Pre-commit hook**: auto-formats staged C/H files with clang-format, runs clang-tidy (requires `build/compile_commands.json`). Install via `git config core.hooksPath .githooks`.
 
-**CI** (`.github/workflows/ci-release.yml`): On push/PR to `main`:
+**CI** (`.github/workflows/ci.yml` and `.github/workflows/release.yml`): On push/PR to `main`:
 - `format-check`: clang-format dry-run on all C/H files (excludes `components/u8g2`)
 - `lint-check`: clang-tidy on build output (requires ESP-IDF v5.5 toolchain)
-- `build`: compiles 4 target configs (esp32s3, squeezeamp-bt, squeezeamp-4m, esparagus-audio-brick-bt)
-- `release`: auto-creates GitHub release with merged firmware bins (only on push)
+- `build`: compiles only the supported `esp32s3` release target
+- `output-backends`: compile-checks the S/PDIF and USB output variants without publishing them
+- `release`: tagged builds publish only the merged `esp32s3` firmware image
 
 **Local tooling** (in `scripts/`):
 ```bash

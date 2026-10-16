@@ -8,7 +8,7 @@ hide:
 
 # ESP32 AirPlay 2 Receiver
 
-**Stream music from your Apple devices — or from any phone over Bluetooth — to any speaker, for about $10.**
+**Add AirPlay 2 to an amplifier with an ESP32-S3 N16R8 and a PCM5102A DAC.**
 
 This firmware turns a cheap ESP32 board into a wireless AirPlay 2 speaker. Plug it into
 an amplifier or powered speakers and it shows up on your iPhone, iPad or Mac just like a
@@ -27,9 +27,8 @@ No cloud. No app. Just tap and play.
       <span slot="not-allowed">Flashing needs a secure (HTTPS) connection.</span>
     </esp-web-install-button>
 
-    That button is for a generic **ESP32-S3**. For SqueezeAMP, Esparagus, Waveshare and
-    the rest, see [all boards on the flashing page](getting-started/flashing.md). Requires
-    Chrome, Edge or Opera on desktop.
+    This installer is only for the officially supported **ESP32-S3 N16R8 + PCM5102A**
+    build. It requires Chrome, Edge or Opera on desktop.
 
 <div class="grid cards" markdown>
 
@@ -39,11 +38,11 @@ No cloud. No app. Just tap and play.
 
     [Start here](getting-started/index.md)
 
--   __Already have a board?__
+-   __Check your hardware__
 
-    SqueezeAMP, Esparagus Audio Brick, XIAO ESP32-C5 and more.
+    The ready-to-flash release requires an ESP32-S3 N16R8 and PCM5102A.
 
-    [Pick your board](boards/index.md)
+    [Hardware support](boards/index.md)
 
 -   __Something not working?__
 
@@ -89,27 +88,26 @@ stream, decodes it, keeps it clock-synced to the sender, and pushes the audio ou
 to a DAC. The DAC drives your amplifier. Full detail in
 [architecture](reference/architecture.md).
 
-## Supported hardware
+## Officially supported hardware
 
-Works with **ESP32**, **ESP32-S2**, **ESP32-S3** and **ESP32-C5** chips. That includes
-plain dev boards paired with an external I2S DAC, and several integrated
-amplifier boards:
+Ready-to-flash releases from this fork are built and tested only for:
 
-- [SqueezeAMP](boards/squeezeamp.md) — ESP32 + TAS5756 DAC and Class-D amplifier
-- [Esparagus Audio Brick](boards/esparagus-audio-brick.md) — ESP32 or ESP32-S3 + TAS58xx DAC/amp, on-chip DSP, Ethernet
-- [Esparagus Audio Brick Dual](boards/esparagus-audio-brick-dual-dac.md) — ESP32-S3 + two amplifiers, active crossover, USB audio
-- [ESP32-S3 + PCM5102A](boards/esp32s3-pcm5102a.md) — the cheapest route; basic soldering required
+- **ESP32-S3 N16R8** — 16 MB flash and 8 MB octal PSRAM
+- **PCM5102A I2S DAC** — connected using the documented GPIO10–GPIO14 header
 
-ESP32-based boards additionally support **Bluetooth A2DP**, so anything that can pair with
-a Bluetooth speaker can play to them when AirPlay is idle.
+See [ESP32-S3 + PCM5102A](boards/esp32s3-pcm5102a.md) for the exact board requirements,
+wiring and solder bridges.
+
+Other chip and board profiles remain in the source tree because they were inherited from
+the upstream project. They are not tested by this fork, are not included in releases and
+are not officially supported. See [hardware support](boards/index.md) before attempting a
+source build for one of them.
 
 ## Features
 
 - **AirPlay 2** — appears natively in Control Center and every AirPlay-capable app
 - **ALAC and AAC decoding** — handles both live streaming (Siri, calls) and music playback
 - **Multi-room** — PTP-based timing for synchronised playback across devices
-- **Bluetooth A2DP** — receive audio from phones and tablets (ESP32 boards only)
-- **W5500 Ethernet** — wired networking with automatic WiFi failover
 - **Web configuration** — set WiFi and device name from a browser
 - **OTA updates** — update over WiFi; USB is only needed for the first flash
 - **48 kHz output** — optional 44.1 → 48 kHz conversion for DACs and S/PDIF receivers that need it
@@ -131,7 +129,7 @@ a Bluetooth speaker can play to them when AirPlay is idle.
 ## Legal
 
 **Non-commercial use only.** Commercial use requires explicit permission — see
-[LICENSE](https://github.com/rbouteiller/airplay-esp32/blob/main/LICENSE).
+[LICENSE](https://github.com/serverdevel/airplay-esp32/blob/homekit-0.2.1.4/LICENSE).
 
 This is an independent project based on protocol analysis. It is not affiliated with
 Apple Inc., is not guaranteed to work with future iOS or macOS versions, and is provided

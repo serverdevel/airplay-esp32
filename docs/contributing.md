@@ -11,7 +11,7 @@ the pioarduino platform pinned in `platformio.ini`, so no manual ESP-IDF install
 for that route. Clone with submodules:
 
 ```bash
-git clone --recursive https://github.com/rbouteiller/airplay-esp32
+git clone --recursive https://github.com/serverdevel/airplay-esp32
 ```
 
 ## Formatting
@@ -47,10 +47,10 @@ git config core.hooksPath .githooks
 
 **Open pull requests against `staging`, not `main`.**
 
-`staging` is the integration branch. Every push to it rebuilds the firmware matrix and
-replaces the rolling `beta` pre-release, so anything merged there is immediately
-installable from the [browser installer](getting-started/flashing.md#beta-builds) and can
-be tried on real hardware before it reaches anyone running a release.
+`staging` is the integration branch. Beta builds, when enabled, must publish only the
+official `esp32s3` target. Do not expose inherited board profiles through the browser
+installer without first validating the hardware and changing the documented support
+policy.
 
 `main` carries stable releases. It is what the documentation site is published from and
 what the release install buttons serve, and it moves only when `staging` has proved itself
@@ -82,17 +82,15 @@ On every pull request to `main` or `staging`, and on every push to `main`:
 A pull request that touches only Markdown skips the firmware jobs, so a docs typo does not
 cost an ESP-IDF toolchain build.
 
-The target list lives in `.github/workflows/targets.json`. A pull request builds only the
-entries flagged `"core": true` — enough to cover every chip and every board support
-directory — while a push to `main` and a push to `staging` build all of them. The matrix
-does not fail fast, and the beta job publishes whatever succeeded, so one board failing to
-compile does not withhold every other board's build.
+The reusable release matrix lives in `.github/workflows/build.yml` and intentionally has
+one entry: `esp32s3`. It uses `config/sdkconfig.defaults.esp32s3`, which is configured for
+an ESP32-S3 N16R8 and the documented PCM5102A pinout. The only browser-installer manifest
+is `docs/firmware/esp32s3.json`.
 
-Adding a target means an entry in `targets.json` **and** a matching
-`docs/firmware/<name>.json` manifest whose `parts[0].path` is
-`airplay2-receiver-<name>.bin`. The docs workflow silently drops a manifest whose binary is
-missing from the release, so a target added here shows up in the browser installer only
-once a release actually carries it.
+The repository retains upstream build profiles for other chips and audio boards as source
+references. A successful local compilation does not make one of those profiles supported.
+Adding an official target requires real-hardware validation, documentation, its own
+installer manifest and an explicit support-policy update in the same change.
 
 Tagging `vMAJOR.MINOR.PATCH` triggers a release, which validates the tag against
 `version.txt` and publishes merged firmware binaries.

@@ -6,13 +6,13 @@
 
 # AirPlay 2-приёмник на ESP32
 
-**Передавайте музыку с устройств Apple или любого телефона через Bluetooth на любые колонки примерно за 10 долларов**
+**Добавьте AirPlay 2 к домашней аудиосистеме с помощью ESP32-S3 N16R8 и ЦАП PCM5102A**
 
-[![Звёзды GitHub](https://img.shields.io/github/stars/rbouteiller/airplay-esp32?style=flat-square)](https://github.com/rbouteiller/airplay-esp32/stargazers)
-[![Форки GitHub](https://img.shields.io/github/forks/rbouteiller/airplay-esp32?style=flat-square)](https://github.com/rbouteiller/airplay-esp32/network)
+[![Звёзды GitHub](https://img.shields.io/github/stars/serverdevel/airplay-esp32?style=flat-square)](https://github.com/serverdevel/airplay-esp32/stargazers)
+[![Форки GitHub](https://img.shields.io/github/forks/serverdevel/airplay-esp32?style=flat-square)](https://github.com/serverdevel/airplay-esp32/network)
 [![Лицензия](https://img.shields.io/badge/license-Non--Commercial-blue?style=flat-square)](LICENSE)
 [![ESP-IDF](https://img.shields.io/badge/ESP--IDF-v5.5+-red?style=flat-square)](https://docs.espressif.com/projects/esp-idf/)
-[![Платформа](https://img.shields.io/badge/platform-ESP32%20%7C%20S2%20%7C%20S3%20%7C%20C5-green?style=flat-square)](https://www.espressif.com/en/products/socs)
+[![Платформа](https://img.shields.io/badge/platform-ESP32--S3%20N16R8-green?style=flat-square)](https://www.espressif.com/en/products/socs/esp32-s3)
 
 ### [Документация](docs/ru/index.md) · [Установка из браузера](docs/ru/getting-started/flashing.md) · [Устранение неполадок](docs/ru/troubleshooting.md)
 
@@ -31,14 +31,13 @@ iPad или Mac так же, как HomePod или телевизор с AirPlay
        alt="Собранный AirPlay-приёмник на ESP32-S3 и PCM5102A" width="720">
 </p>
 
-Поддерживаются **ESP32**, **ESP32-S2**, **ESP32-S3** и **ESP32-C5**, включая
-[SqueezeAMP](https://github.com/philippe44/SqueezeAMP) на ESP32 с TAS5756 и
-[Esparagus Audio Brick](https://sonocotta.com/espragus-audio-brick/) на ESP32 с
-TAS5825M — эти платы уже содержат усилитель.
+Готовые релизы этого форка собираются и проверяются только для **ESP32-S3 N16R8**
+(16 МБ flash и 8 МБ octal PSRAM), подключённой к ЦАП **PCM5102A** по указанной ниже
+распиновке.
 
-Платы на классическом ESP32 также поддерживают **Bluetooth A2DP**, поэтому на них
-можно передавать звук с любого телефона или планшета, когда AirPlay не используется.
-Esparagus Audio Brick дополнительно поддерживает проводную сеть через модуль W5500.
+В репозитории сохранены унаследованные от исходного проекта профили сборки для других
+чипов ESP32 и готовых аудиоплат. В этом форке они не тестируются, не входят в релизы
+и официально не поддерживаются.
 
 **Без облака. Без отдельного приложения. Просто выберите устройство и включите музыку.**
 
@@ -49,7 +48,7 @@ Esparagus Audio Brick дополнительно поддерживает про
 
 **[→ Установить из браузера](docs/ru/getting-started/flashing.md)**
 
-Для самостоятельной сборки понадобятся плата ESP32-S3, ЦАП PCM5102A,
+Для самостоятельной сборки понадобятся плата ESP32-S3 N16R8, ЦАП PCM5102A,
 шестиконтактная штырьковая гребёнка и базовые инструменты для пайки. Общая
 стоимость деталей — около 10 долларов. Подробности приведены в
 [инструкции по сборке](docs/ru/getting-started/assembly.md).
@@ -57,7 +56,7 @@ Esparagus Audio Brick дополнительно поддерживает про
 Сборка из исходного кода:
 
 ```bash
-git clone --recursive https://github.com/rbouteiller/airplay-esp32
+git clone --recursive https://github.com/serverdevel/airplay-esp32
 cd airplay-esp32
 pio run -e esp32s3 -t upload
 pio run -e esp32s3 -t uploadfs   # required — writes the web UI to SPIFFS
@@ -83,8 +82,6 @@ pio run -e esp32s3 -t uploadfs   # required — writes the web UI to SPIFFS
 - **AirPlay 2** — устройство отображается в Пункте управления и приложениях с поддержкой AirPlay;
 - **декодирование ALAC и AAC** — музыка, звонки и трансляции в реальном времени;
 - **мультирум** — синхронизация воспроизведения по PTP;
-- **Bluetooth A2DP** — приём звука с телефонов и планшетов на платах ESP32;
-- **Ethernet W5500** — проводная сеть с автоматическим переключением на Wi-Fi;
 - **веб-интерфейс и OTA-обновления** — USB нужен только для первой прошивки;
 - **выход 48 кГц** — дополнительное преобразование 44,1 → 48 кГц sinc-ресемплером;
 - **дисплеи** — OLED или цветной TFT 320 × 170 с информацией о треке;
@@ -98,8 +95,8 @@ pio run -e esp32s3 -t uploadfs   # required — writes the web UI to SPIFFS
 | Раздел | Содержание |
 | --- | --- |
 | [Начало работы](docs/ru/getting-started/index.md) | Покупка деталей, сборка, прошивка и первый запуск |
-| [Поддерживаемые платы](docs/ru/boards/index.md) | SqueezeAMP, Esparagus Audio Brick, XIAO ESP32-C5 и пользовательские платы |
-| [Функции](docs/ru/features/bluetooth.md) | Bluetooth, Ethernet, дисплеи, кнопки и настройка AirPlay |
+| [Оборудование](docs/ru/boards/index.md) | Официальная сборка ESP32-S3 N16R8 и непроверенные унаследованные профили |
+| [Функции](docs/ru/features/airplay-tuning.md) | Дисплеи, кнопки и настройка AirPlay |
 | [Справочник](docs/ru/reference/build-environments.md) | Среды сборки, SPIFFS, OTA и архитектура |
 | [Устранение неполадок](docs/ru/troubleshooting.md) | Нет звука, не появляется сеть настройки, обрывы и ошибки сборки |
 

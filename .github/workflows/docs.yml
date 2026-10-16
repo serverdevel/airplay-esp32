@@ -66,6 +66,16 @@ jobs:
             local dir="$1" tag="$2" version="$3"
             gh release download "$tag" --repo "$GITHUB_REPOSITORY" \
               --pattern '*.bin' --dir "$dir"
+
+            # v0.2.1.x releases use a versioned "-full.bin" filename, while the
+            # web installer manifest uses one stable same-origin filename.
+            if [ ! -f "$dir/airplay2-receiver-esp32s3.bin" ]; then
+              full="$(find "$dir" -maxdepth 1 -name 'airplay2-receiver-esp32s3-v*-full.bin' -print -quit)"
+              if [ -n "$full" ]; then
+                cp "$full" "$dir/airplay2-receiver-esp32s3.bin"
+              fi
+            fi
+
             for manifest in "$dir"/*.json; do
               bin="$(jq -r '.builds[0].parts[0].path' "$manifest")"
               if [ ! -f "$dir/$bin" ]; then

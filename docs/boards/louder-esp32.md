@@ -2,6 +2,12 @@
 
 # Louder-ESP32 and Louder-ESP32-Plus
 
+!!! warning "Inherited and unverified profile"
+
+    This page documents source code inherited from the upstream project. This fork does
+    not test this hardware, publish a ready-to-flash image for it or provide official
+    support. Build and validate it yourself at your own risk.
+
 The Sonocotta [Louder-ESP32](https://github.com/sonocotta/esp32-audio-dock) boards carry a
 TI **TAS58xx** combined DAC and Class-D amplifier, the same family the
 [Esparagus Audio Brick](esparagus-audio-brick.md) uses. Speakers connect directly.
@@ -20,17 +26,17 @@ Volume is done in the amplifier (`CONFIG_DAC_CONTROLS_VOLUME`) rather than in so
 
 ## Variants
 
-| Environment | Chip | Amplifier | Bluetooth | Prebuilt |
+| Environment | Chip | Amplifier | Bluetooth | Release image |
 | --- | --- | --- | :-: | :-: |
 | `louder-esp32` | ESP32 | TAS5805M | — | — |
-| `louder-esp32-bt` | ESP32 | TAS5805M | yes | yes |
+| `louder-esp32-bt` | ESP32 | TAS5805M | yes | — |
 | `louder-esp32-plus` | ESP32 | TAS5825M | — | — |
-| `louder-esp32-plus-bt` | ESP32 | TAS5825M | yes | yes |
-| `louder-esp32-s3` | ESP32-S3 | TAS5805M | — | yes |
-| `louder-esp32-s3-plus` | ESP32-S3 | TAS5825M | — | yes |
+| `louder-esp32-plus-bt` | ESP32 | TAS5825M | yes | — |
+| `louder-esp32-s3` | ESP32-S3 | TAS5805M | — | — |
+| `louder-esp32-s3-plus` | ESP32-S3 | TAS5825M | — | — |
 
 Bluetooth Classic exists only on the original ESP32, so neither S3 board has a `-bt`
-build. On an ESP32 the published binary is the Bluetooth one.
+build. No variant is published by this fork.
 
 !!! note "Esparagus Louder is a separate board"
 
@@ -51,10 +57,9 @@ build. On an ESP32 the published binary is the Bluetooth one.
 
 ## Flashing
 
-=== "Browser"
+=== "Release image"
 
-    Use the Louder installer for your board on the
-    [flashing page](../getting-started/flashing.md).
+    No release image is published by this fork. Build and validate this profile yourself.
 
 === "PlatformIO"
 

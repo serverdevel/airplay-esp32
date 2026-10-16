@@ -1,74 +1,50 @@
 [English](../../boards/index.md) | **Русский**
 
 <a id="supported-boards"></a>
-# Поддерживаемые платы
+# Поддержка оборудования
 
-Выберите страницу для своего оборудования. Если вы собираете устройство из отдельных
-компонентов, начните с варианта [ESP32-S3 + PCM5102A](esp32s3-pcm5102a.md).
+<a id="official-release-target"></a>
+## Официальная конфигурация релиза
 
-<a id="which-board-should-i-buy"></a>
-## Какую плату выбрать?
+Этот форк публикует и проверяет готовую прошивку только для одной конфигурации:
 
-Если одна из этих плат у вас уже есть, найдите её в таблице ниже. При покупке с нуля
-главный вопрос — требуется ли вам Bluetooth.
+| Плата | Память | Аудиовыход | Образ в релизе | Статус |
+| --- | --- | --- | :-: | --- |
+| [ESP32-S3 N16R8 + PCM5102A](esp32s3-pcm5102a.md) | 16 МБ flash, 8 МБ octal PSRAM | Внешний I2S-ЦАП | да | **Поддерживается и проверяется** |
 
-```mermaid
-flowchart TD
-    BT{"Нужен Bluetooth?"}
-    AMP{"Нужен встроенный<br/>усилитель?"}
+Используется распиновка GPIO10–GPIO14 и положение перемычек, описанное в
+[руководстве по сборке](../getting-started/assembly.md). Другие варианты памяти и
+распиновки ESP32-S3 не являются взаимозаменяемыми с опубликованным образом.
 
-    S3["ESP32-S3 + PCM5102A<br/><small>самый недорогой вариант, около $10</small>"]
-    AMPBOARD["Esparagus Audio Brick, SqueezeAMP,<br/>Louder / Loud / Amped<br/><small>динамики подключаются напрямую</small>"]
-    ESP32["ESP32 + PCM5102A<br/>или HiFi-ESP32<br/><small>с внешним усилителем</small>"]
+!!! warning "Проверьте маркировку модуля"
 
-    BT -->|нет| S3
-    BT -->|да| AMP
-    AMP -->|да| AMPBOARD
-    AMP -->|нет, усилитель уже есть| ESP32
+    Для релиза нужен модуль **N16R8**. Надписи «ESP32-S3» недостаточно: плата с меньшим
+    объёмом flash, без PSRAM или с другим режимом PSRAM может не загрузиться либо
+    столкнуться с нехваткой памяти.
 
-    classDef pick stroke:#26a69a,stroke-width:2px
-    class S3,AMPBOARD,ESP32 pick
-```
+<a id="inherited-source-profiles"></a>
+## Унаследованные профили исходного кода
 
-Коротко: **выбирайте ESP32-S3**, если вам не нужен Bluetooth. Для Bluetooth A2DP
-потребуется оригинальный ESP32.
+В репозитории сохранены следующие профили основного проекта. Они могут пригодиться как
+примеры портирования и всё ещё могут собираться, но этот форк их **не тестирует, не
+публикует для них готовые образы и не предоставляет поддержку оборудования**:
 
-| Плата | Чип | ЦАП/усилитель | Bluetooth | Ethernet | Готовая прошивка |
-| --- | --- | --- | :-: | :-: | :-: |
-| [ESP32-S3 + PCM5102A](esp32s3-pcm5102a.md) | ESP32-S3 | Внешний I2S-ЦАП | — | — | да |
-| [Waveshare ESP32-S3](esp32s3-pcm5102a.md#waveshare-esp32-s3) | ESP32-S3 | Внешний I2S-ЦАП | — | — | да |
-| [SqueezeAMP](squeezeamp.md) | ESP32 | TAS5756 | да | — | да |
-| [Esparagus Audio Brick](esparagus-audio-brick.md) | ESP32/S3 | TAS58xx | Только ESP32 | да | да |
-| [Esparagus Audio Brick Dual](esparagus-audio-brick-dual-dac.md) | ESP32-S3 | 2 × TAS58xx | — | да | да |
-| [Esparagus Louder](esparagus-audio-brick.md#esparagus-louder) | ESP32/S3 | TAS58xx | Только ESP32 | да | да |
-| [HiFi-ESP32](hifi-esp32.md) | ESP32/S3 | PCM5100, линейный выход | Только ESP32 | да | да |
-| [HiFi-Esparagus](hifi-esp32.md) | ESP32/S3 | PCM5100, линейный выход | Только ESP32 | — | да |
-| [Loud-ESP32](loud-esp32.md) | ESP32/S3 | MAX98357A | Только ESP32 | да | да |
-| [Loud-Esparagus](loud-esp32.md) | ESP32 | 2 × MAX98357A | да | — | да |
-| [Esparagus Echo](loud-esp32.md) | ESP32-S3 | 2 × MAX98357A | — | да | да |
-| [Amped-ESP32](amped-esp32.md) | ESP32/S3 | PCM5100 + TPA31xx | Только ESP32 | да | да |
-| [Amped-Esparagus](amped-esp32.md) | ESP32 | PCM5100 + TPA31xx | да | да | да |
-| [Louder-ESP32](louder-esp32.md) | ESP32/S3 | TAS5805M | Только ESP32 | да | да |
-| [Louder-ESP32-Plus](louder-esp32.md) | ESP32/S3 | TAS5825M | Только ESP32 | да | да |
-| [Seeed XIAO ESP32-C5](xiao-esp32c5.md) | ESP32-C5 | Внешний I2S-ЦАП | — | — | — |
-| [Пользовательская плата](custom.md) | любой | любой | — | — | — |
+- [SqueezeAMP](squeezeamp.md)
+- [Esparagus Audio Brick и Esparagus Louder](esparagus-audio-brick.md)
+- [Esparagus Audio Brick Dual](esparagus-audio-brick-dual-dac.md)
+- [HiFi-ESP32 и HiFi-Esparagus](hifi-esp32.md)
+- [Loud-ESP32, Loud-Esparagus и Esparagus Echo](loud-esp32.md)
+- [Amped-ESP32 и Amped-Esparagus](amped-esp32.md)
+- [Louder-ESP32](louder-esp32.md)
+- [Seeed XIAO ESP32-C5](xiao-esp32c5.md)
+- ESP32-S2, Waveshare ESP32-S3, ESP32-WROVER и пользовательские профили
 
-**Bluetooth Classic A2DP доступен только на оригинальном ESP32.** У ESP32-S3, S2 и C5
-есть лишь Bluetooth LE либо Bluetooth отсутствует, поэтому A2DP на них не работает.
-
-<a id="choosing-a-chip"></a>
-## Выбор чипа
-
-| Чип | Примечания |
-| --- | --- |
-| **ESP32-S3** | Лучший вариант по умолчанию: много PSRAM, встроенный USB и активная поддержка проекта. |
-| **ESP32** | Выбирайте для Bluetooth A2DP. Оперативной памяти меньше, поэтому аудиобуферы уменьшены вдвое. |
-| **ESP32-S2** | Поддерживается, но имеет одно ядро и не поддерживает Bluetooth. Готовый образ публикуется. |
-| **ESP32-C5** | Двухдиапазонный Wi‑Fi 6 и RISC-V. Нужна платформа PlatformIO от сообщества — см. [страницу платы](xiao-esp32c5.md). |
-| **ESP32-P4** | Экспериментальная поддержка: `config/sdkconfig.defaults.esp32p4` существует, среды PlatformIO пока нет. |
+Используйте их только при готовности самостоятельно собрать прошивку, найти проблемы,
+связанные с конкретной платой, и проверить результат. Наличие профиля в `platformio.ini`
+или `config/` не означает, что он является поддерживаемой целью релиза.
 
 <a id="full-build-environment-list"></a>
 ## Полный список сред сборки
 
-Все среды PlatformIO, включая варианты без готовых образов, перечислены в разделе
+Унаследованные профили PlatformIO и ESP-IDF перечислены в разделе
 [«Среды сборки»](../reference/build-environments.md).

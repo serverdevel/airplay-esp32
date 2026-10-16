@@ -2,6 +2,11 @@
 
 # HybridFlow DSP (TAS57xx)
 
+!!! warning "Inherited board feature"
+
+    HybridFlow requires a TAS57xx amplifier and is not available on the supported
+    ESP32-S3 N16R8 + PCM5102A hardware. This page is retained as an upstream reference.
+
 Some TAS57xx amplifiers carry a small DSP core — TI calls it the miniDSP — that can run a
 signal chain in front of the output stage. TI ships those chains as **HybridFlow** process
 flows, and the firmware can load one, tune it live from a web page, and keep the tuning

@@ -3,7 +3,9 @@
 <a id="build-environments"></a>
 # Среды сборки
 
-Каждая среда PlatformIO, определенная в `platformio.ini`. По умолчанию — `esp32s3`.
+Здесь перечислены среды PlatformIO из `platformio.ini`. Этот форк собирает, проверяет и
+публикует только **`esp32s3`** — ESP32-S3 N16R8 с PCM5102A. Все остальные записи на
+этой странице являются унаследованными, непроверенными профилями без образов в релизе.
 
 <a id="generic-boards"></a>
 ## Общие платы
@@ -85,7 +87,7 @@
 
 | Цель | Сдкконфиг | Статус |
 | --- | --- | --- |
-| ESP32-S2 | `config/sdkconfig.defaults.esp32s2` | Встроенный в CI, опубликованный готовый образ |
+| ESP32-S2 | `config/sdkconfig.defaults.esp32s2` | Унаследованный непроверенный профиль; образ не публикуется |
 | ESP32-P4 | `config/sdkconfig.defaults.esp32p4` | Экспериментальный |
 
 ```bash
@@ -94,33 +96,15 @@ idf.py -DSDKCONFIG_DEFAULTS="config/sdkconfig.defaults;config/sdkconfig.defaults
 ```
 
 <a id="which-builds-get-a-prebuilt-binary"></a>
-## Для каких сред публикуются готовые образы
+## Публикуемый образ релиза
 
-CI создает подмножество сред и присоединяет их к каждому выпуску. Это те
-доступно в [установщике браузера](../getting-started/flashing.md):
+Workflow релиза собирает только **`esp32s3`**. В браузерном установщике используется
+только соответствующий манифест `docs/firmware/esp32s3.json`. Ни стабильные релизы,
+ни бета-версии не должны публиковать профили других плат.
 
-`esp32s3`, `waveshare-esp32s3`, `esp32s2`, `squeezeamp-bt`, `squeezeamp-4m`, `smartamp`,
-`esparagus-audio-brick-bt`, `esparagus-audio-brick-s3`, `esparagus-audio-brick-dual-dac`,
-`esparagus-audio-brick-dual-uac`, `esparagus-louder-bt`, `esparagus-louder-s3`,
-`esparagus-echo`, `hifi-esp32-bt`, `hifi-esparagus-bt`, `hifi-esp32-s3`,
-`hifi-esparagus-s3`, `loud-esp32-bt`, `loud-esparagus-bt`, `loud-esp32-s3`,
-`amped-esp32-bt`, `amped-esparagus-bt`, `amped-esp32-s3`, `louder-esp32-bt`,
-`louder-esp32-plus-bt`, `louder-esp32-s3`, `louder-esp32-s3-plus`.
-
-Список находится в `.github/workflows/targets.json`, и каждой записи требуется соответствие.
-Манифест `docs/firmware/<name>.json`, который может предложить установщик.
-
-Все остальное вы строите сами. На плате ESP32, поддерживающей Bluetooth, опубликованный
-двоичный файл всегда включает его, поэтому готовых `squeezeamp`, `esparagus-audio-brick` нет,
-`esparagus-louder`, `hifi-esp32`, `loud-esp32`, `amped-esp32` или `louder-esp32` — сборка
-один из них, если вам нужна оперативная память и флэш-память.
-
-Тот же список запускается при каждом нажатии на `staging` и публикует скользящий список.
-[бета](../getting-started/flashing.md#beta-builds) предварительная версия, поэтому каждая из этих плат
-также имеется непроверенная версия текущего совета по разработке. Создается запрос на включение
-только записи с пометкой `"core": true`, которые охватывают каждый чип и каждую поддерживаемую плату.
-каталог без задания на вариант, да и матрица быстро не выходит из строя, поэтому одна плата
-неудачная компиляция больше не останавливает публикацию остальных.
+Все остальные среды сохранены только как справочные материалы основного проекта и
+основа для ручного портирования. Даже успешная компиляция такого профиля не означает,
+что он официально поддерживается.
 
 <a id="how-sdkconfig-layering-works"></a>
 ## Как объединяются файлы sdkconfig

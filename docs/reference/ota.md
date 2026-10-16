@@ -7,7 +7,7 @@ unplugging anything. USB is only needed for the very first flash.
 
 1. Get the new firmware — either build it (`pio run -e <env>` or `idf.py build`) or
    download a `.bin` from the
-   [releases page](https://github.com/rbouteiller/airplay-esp32/releases/latest).
+   [releases page](https://github.com/serverdevel/airplay-esp32/releases/latest).
 2. Open the device's web interface. Find its IP in your router's list of connected clients.
 3. Use the firmware upload page to flash the new version.
 

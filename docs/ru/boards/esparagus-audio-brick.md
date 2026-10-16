@@ -3,6 +3,12 @@
 <a id="esparagus-audio-brick"></a>
 # Esparagus Audio Brick
 
+!!! warning "Унаследованный непроверенный профиль"
+
+    Эта страница описывает исходный код, унаследованный от основного проекта. Данный
+    форк не тестирует эту плату, не публикует для неё готовый образ и не предоставляет
+    официальную поддержку. Самостоятельная сборка и проверка выполняются на ваш риск.
+
 [Esparagus Audio Brick](https://github.com/sonocotta/esparagus-media-center/?tab=readme-ov-file#esparagus-audio-brick-prototype)
 построен на базе ЦАП и усилителя TI **TAS5825M** класса D. Как и SqueezeAMP, он
 не нужен внешний ЦАП — подключайте динамики напрямую.
@@ -31,11 +37,9 @@
 <a id="flashing"></a>
 ## Прошивка
 
-=== "Браузер"
+=== "Образ релиза"
 
-Используйте установщик аудио модуля Esparagus на
-    [страница прошивки](../getting-started/flashing.md). Опубликованный образ — это
-    Bluetooth + сборка Ethernet.
+    Этот форк не публикует готовый образ. Соберите и проверьте профиль самостоятельно.
 
 === "PlatformIO"
 
@@ -300,17 +304,15 @@ TAS5805M, поэтому страница эквалайзера продолж�
 <a id="variants"></a>
 ## Варианты
 
-| Среда сборки | Чип | Bluetooth | Готовые | Заметки |
+| Среда сборки | Чип | Bluetooth | Образ релиза | Заметки |
 | --- | --- | :-: | :-: | --- |
 | `esparagus-audio-brick` | ESP32 | — | — | AirPlay + Ethernet |
-| `esparagus-audio-brick-bt` | ESP32 | да | да | Добавляет Bluetooth A2DP |
-| `esparagus-audio-brick-s3` | ESP32-S3 | — | да | Распиновка S3, PSRAM, на этом чипе нет Bluetooth Classic |
-| `esparagus-audio-brick-dual-dac` | ESP32-S3 | — | да | [Dual](esparagus-audio-brick-dual-dac.md), два усилителя: стерео по 0x4C, второй по 0x4D |
-| `esparagus-audio-brick-dual-uac` | ESP32-S3 | — | да | [Dual](esparagus-audio-brick-dual-dac.md) в качестве аудиоустройства USB |
+| `esparagus-audio-brick-bt` | ESP32 | да | — | Добавляет Bluetooth A2DP |
+| `esparagus-audio-brick-s3` | ESP32-S3 | — | — | Распиновка S3, PSRAM, на этом чипе нет Bluetooth Classic |
+| `esparagus-audio-brick-dual-dac` | ESP32-S3 | — | — | [Dual](esparagus-audio-brick-dual-dac.md), два усилителя: стерео по 0x4C, второй по 0x4D |
+| `esparagus-audio-brick-dual-uac` | ESP32-S3 | — | — | [Dual](esparagus-audio-brick-dual-dac.md) в качестве аудиоустройства USB |
 
-Те, что отмечены как готовые, находятся в
-[установщик браузера](../getting-started/flashing.md). На ESP32 опубликованный образ
-Bluetooth, поэтому создайте `esparagus-audio-brick` самостоятельно, если хотите вернуть эту оперативную память.
+Ни один вариант в этой таблице не публикуется и не тестируется данным форком.
 
 Bluetooth Classic существует только на оригинальном ESP32, поэтому в сборке `-bt` нет S3.
 эквивалент; блок S3 подключается к сети через Ethernet или WiFi. У Dual есть два
@@ -321,11 +323,11 @@ Bluetooth Classic существует только на оригинально�
 
 Esparagus Louder — это усилитель той же конструкции, но на собственной плате.
 
-| Среда сборки | Чип | Bluetooth | Готовые |
+| Среда сборки | Чип | Bluetooth | Образ релиза |
 | --- | --- | :-: | :-: |
 | `esparagus-louder` | ESP32 | — | — |
-| `esparagus-louder-bt` | ESP32 | да | да |
-| `esparagus-louder-s3` | ESP32-S3 | — | да |
+| `esparagus-louder-bt` | ESP32 | да | — |
+| `esparagus-louder-s3` | ESP32-S3 | — | — |
 
 ```bash
 pio run -e esparagus-louder-s3 -t upload

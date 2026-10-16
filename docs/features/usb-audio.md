@@ -2,6 +2,11 @@
 
 # USB audio (UAC)
 
+!!! warning "Not included in the supported release image"
+
+    USB audio uses a separate source-build configuration. It is not tested or published
+    as part of the ESP32-S3 N16R8 + PCM5102A release.
+
 Boards with a USB OTG port can present themselves to an attached computer as a **stereo USB
 speaker**. Audio sent by the host plays through the same output path AirPlay uses, sharing
 the DAC's DSP, EQ and volume control.

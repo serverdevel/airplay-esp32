@@ -67,7 +67,7 @@ PSRAM and draws all widgets on top of it. With no file present the screen falls 
 solid black and everything still renders correctly.
 
 No background ships with the firmware — one costs 106 KB of SPIFFS, which does not fit
-alongside the web UI on a 4 MB board, and most supported boards have no display at all.
+alongside the web UI on a 4 MB board, and most inherited board profiles have no display at all.
 To add one:
 
 1. Design your image and export a PNG. Any size works — it gets resized.
@@ -97,7 +97,7 @@ applies Floyd–Steinberg dithering, which helps a little.
 
 If colours come out washed out, swapped or psychedelic, the byte order is wrong rather than
 the driver — see the colour bar test in the
-[display component README](https://github.com/rbouteiller/airplay-esp32/blob/main/components/display/README.md).
+[display component README](https://github.com/serverdevel/airplay-esp32/blob/homekit-0.2.1.4/components/display/README.md).
 
 ## Cover art
 
@@ -109,4 +109,4 @@ a TFT display and want it, see [AirPlay tuning](airplay-tuning.md#cover-art).
 Non-obvious integration requirements for ESP-IDF + LVGL 9 + `esp_lvgl_port` — rotation
 ordering, LVGL task core affinity, and DMA buffer placement — are documented alongside the
 code in the
-[display component README](https://github.com/rbouteiller/airplay-esp32/blob/main/components/display/README.md).
+[display component README](https://github.com/serverdevel/airplay-esp32/blob/homekit-0.2.1.4/components/display/README.md).

@@ -2,6 +2,11 @@
 
 # Bluetooth A2DP
 
+!!! warning "Not available in this fork's supported release"
+
+    The supported ESP32-S3 N16R8 image has no Bluetooth Classic radio and cannot use
+    A2DP. This page describes inherited code for unverified original-ESP32 profiles.
+
 ESP32-based boards can receive audio over **Bluetooth Classic A2DP**, letting any phone,
 tablet or laptop stream music without an Apple device. The receiver appears as a standard
 Bluetooth speaker with AVRCP metadata and volume control.

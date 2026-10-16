@@ -2,6 +2,12 @@
 
 # Seeed XIAO ESP32-C5
 
+!!! warning "Inherited and unverified profile"
+
+    This page documents source code inherited from the upstream project. This fork does
+    not test this hardware, publish a ready-to-flash image for it or provide official
+    support. Build and validate it yourself at your own risk.
+
 The Seeed XIAO ESP32-C5 is a RISC-V board with 8 MB flash, 8 MB PSRAM and **dual-band
 WiFi 6**, which makes it attractive where 2.4 GHz is congested. Wire an external I2S DAC
 such as a PCM5102A.
@@ -23,7 +29,7 @@ Change them under **Board Configuration → Pin Configuration** in `menuconfig`.
 
 ## Building
 
-There is no prebuilt binary for this board — build it yourself.
+There is no release image for this board — build and validate it yourself.
 
 === "PlatformIO"
 

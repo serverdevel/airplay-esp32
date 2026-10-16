@@ -69,16 +69,16 @@ Work through these in order:
 3. **Confirm the flash actually succeeded.** A merged `.bin` must be written at offset
    `0x0`. Writing it at `0x10000` produces a board that appears to flash fine and then
    does nothing.
-4. **Check you flashed the right binary** for your chip. An ESP32 image on an ESP32-S3
-   will not boot. See [build environments](reference/build-environments.md).
+4. **Make sure the board is an ESP32-S3 N16R8.** The published image is incompatible
+   with other ESP32 chips and memory variants. See [hardware support](boards/index.md).
 5. **Look for saved credentials.** If the device already has WiFi credentials it joins
    that network instead of starting the AP. Erase flash to reset:
    `esptool.py erase_flash`.
 
 ### The device never joins my WiFi
 
-Only 2.4 GHz networks are supported, except on the ESP32-C5 which is dual-band. WPA3-only
-networks will not work — set your router to WPA2 or WPA2/WPA3 mixed mode. After several
+The supported ESP32-S3 N16R8 build uses 2.4 GHz WiFi. WPA3-only networks will not work —
+set your router to WPA2 or WPA2/WPA3 mixed mode. After several
 failed attempts the device returns to setup mode on its own.
 
 ## No sound
@@ -143,7 +143,7 @@ receiver. There is no configuration that fully resolves this today.
 
 On dual-core builds all display work must stay on core 0 so core 1 is free for audio. If
 you are building a custom display integration, see the LVGL task affinity notes in the
-[display component README](https://github.com/rbouteiller/airplay-esp32/blob/main/components/display/README.md).
+[display component README](https://github.com/serverdevel/airplay-esp32/blob/homekit-0.2.1.4/components/display/README.md).
 
 ## Discovery
 
@@ -199,9 +199,9 @@ environment instead — see [Seeed XIAO ESP32-C5](boards/xiao-esp32c5.md).
 
 ## Still stuck?
 
-Search the [issue tracker](https://github.com/rbouteiller/airplay-esp32/issues?q=is%3Aissue)
+Search the [issue tracker](https://github.com/serverdevel/airplay-esp32/issues?q=is%3Aissue)
 including closed issues, then open a new one or start a
-[discussion](https://github.com/rbouteiller/airplay-esp32/discussions).
+[discussion](https://github.com/serverdevel/airplay-esp32/discussions).
 
 Include your board, the build environment or prebuilt binary you used, the firmware
 version, and serial output at 115200 baud. Serial output makes the difference between a

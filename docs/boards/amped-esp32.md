@@ -2,6 +2,12 @@
 
 # Amped-ESP32 and Amped-Esparagus
 
+!!! warning "Inherited and unverified profile"
+
+    This page documents source code inherited from the upstream project. This fork does
+    not test this hardware, publish a ready-to-flash image for it or provide official
+    support. Build and validate it yourself at your own risk.
+
 The Sonocotta [Amped-ESP32](https://github.com/sonocotta/esp32-audio-dock) boards put a
 **PCM5100** I2S DAC in front of a **TPA3110** or **TPA3128** Class-D amplifier. Speakers
 connect directly to the board, but unlike the [Loud](loud-esp32.md) boards the signal
@@ -13,16 +19,16 @@ boards use: muted until a client presses play, standby on pause, off on disconne
 
 ## Variants
 
-| Environment | Chip | Ethernet | Display | Controls | Bluetooth | Prebuilt |
+| Environment | Chip | Ethernet | Display | Controls | Bluetooth | Release image |
 | --- | --- | :-: | :-: | --- | :-: | :-: |
 | `amped-esp32` | ESP32 | yes | SH1106 OLED | — | — | — |
-| `amped-esp32-bt` | ESP32 | yes | SH1106 OLED | — | yes | yes |
+| `amped-esp32-bt` | ESP32 | yes | SH1106 OLED | — | yes | — |
 | `amped-esparagus` | ESP32 | yes | — | rotary encoder | — | — |
-| `amped-esparagus-bt` | ESP32 | yes | — | rotary encoder | yes | yes |
-| `amped-esp32-s3` | ESP32-S3 | yes | SH1106 OLED | — | — | yes |
+| `amped-esparagus-bt` | ESP32 | yes | — | rotary encoder | yes | — |
+| `amped-esp32-s3` | ESP32-S3 | yes | SH1106 OLED | — | — | — |
 
 Bluetooth Classic exists only on the original ESP32, so there is no `-bt` build for the
-S3 board. On an ESP32 the published binary is the Bluetooth one.
+S3 board. No variant is published by this fork.
 
 !!! warning "Amped-Esparagus is rev M only"
 
@@ -48,10 +54,9 @@ S3 board. On an ESP32 the published binary is the Bluetooth one.
 
 ## Flashing
 
-=== "Browser"
+=== "Release image"
 
-    Use the Amped installer for your board on the
-    [flashing page](../getting-started/flashing.md).
+    No release image is published by this fork. Build and validate this profile yourself.
 
 === "PlatformIO"
 

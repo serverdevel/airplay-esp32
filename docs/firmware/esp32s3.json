@@ -1,5 +1,5 @@
 {
-  "name": "ESP32 AirPlay 2 Receiver (ESP32-S3)",
+  "name": "ESP32 AirPlay 2 Receiver (ESP32-S3 N16R8 + PCM5102A)",
   "version": "latest",
   "new_install_prompt_erase": true,
   "builds": [

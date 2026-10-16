@@ -2,6 +2,12 @@
 
 # HiFi-ESP32 and HiFi-Esparagus
 
+!!! warning "Inherited and unverified profile"
+
+    This page documents source code inherited from the upstream project. This fork does
+    not test this hardware, publish a ready-to-flash image for it or provide official
+    support. Build and validate it yourself at your own risk.
+
 The Sonocotta [HiFi-ESP32](https://github.com/sonocotta/esp32-audio-dock) boards pair an
 ESP32 or ESP32-S3 with a TI **PCM5100** I2S DAC and a line-level output. There is no
 amplifier on board, so these feed an existing amp or a pair of active speakers.
@@ -12,20 +18,20 @@ nothing to do beyond bringing up the SPI bus that Ethernet and the display share
 
 ## Variants
 
-| Environment | Chip | Ethernet | Display | Bluetooth | Prebuilt |
+| Environment | Chip | Ethernet | Display | Bluetooth | Release image |
 | --- | --- | :-: | :-: | :-: | :-: |
 | `hifi-esp32` | ESP32 | yes | SH1106 OLED | — | — |
-| `hifi-esp32-bt` | ESP32 | yes | SH1106 OLED | yes | yes |
+| `hifi-esp32-bt` | ESP32 | yes | SH1106 OLED | yes | — |
 | `hifi-esparagus` | ESP32 | — | — | — | — |
-| `hifi-esparagus-bt` | ESP32 | — | — | yes | yes |
-| `hifi-esp32-s3` | ESP32-S3 | yes | SH1106 OLED | — | yes |
-| `hifi-esparagus-s3` | ESP32-S3 | — | — | — | yes |
+| `hifi-esparagus-bt` | ESP32 | — | — | yes | — |
+| `hifi-esp32-s3` | ESP32-S3 | yes | SH1106 OLED | — | — |
+| `hifi-esparagus-s3` | ESP32-S3 | — | — | — | — |
 
 The **Esparagus** variants are the same audio design without the Ethernet jack and the
 display header; they carry a WS2812 status LED instead. Bluetooth Classic exists only on
 the original ESP32, so there is no `-bt` build for either S3 variant.
 
-On an ESP32 the published binary is the Bluetooth one. Build `hifi-esp32` or
+No variant is published by this fork. Build `hifi-esp32` or
 `hifi-esparagus` yourself if you would rather have the RAM and flash back.
 
 ## Features
@@ -40,10 +46,9 @@ On an ESP32 the published binary is the Bluetooth one. Build `hifi-esp32` or
 
 ## Flashing
 
-=== "Browser"
+=== "Release image"
 
-    Use the HiFi installer for your board on the
-    [flashing page](../getting-started/flashing.md).
+    No release image is published by this fork. Build and validate this profile yourself.
 
 === "PlatformIO"
 

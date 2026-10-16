@@ -6,15 +6,15 @@
 
 # ESP32 AirPlay 2 Receiver
 
-**Stream music from your Apple devices — or from any phone over Bluetooth — to any speaker for about $10**
+**Add AirPlay 2 to an amplifier with an ESP32-S3 N16R8 and a PCM5102A DAC**
 
-[![GitHub stars](https://img.shields.io/github/stars/rbouteiller/airplay-esp32?style=flat-square)](https://github.com/rbouteiller/airplay-esp32/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/rbouteiller/airplay-esp32?style=flat-square)](https://github.com/rbouteiller/airplay-esp32/network)
+[![GitHub stars](https://img.shields.io/github/stars/serverdevel/airplay-esp32?style=flat-square)](https://github.com/serverdevel/airplay-esp32/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/serverdevel/airplay-esp32?style=flat-square)](https://github.com/serverdevel/airplay-esp32/network)
 [![License](https://img.shields.io/badge/license-Non--Commercial-blue?style=flat-square)](LICENSE)
 [![ESP-IDF](https://img.shields.io/badge/ESP--IDF-v5.5+-red?style=flat-square)](https://docs.espressif.com/projects/esp-idf/)
-[![Platform](https://img.shields.io/badge/platform-ESP32%20%7C%20S2%20%7C%20S3%20%7C%20C5-green?style=flat-square)](https://www.espressif.com/en/products/socs)
+[![Platform](https://img.shields.io/badge/platform-ESP32--S3%20N16R8-green?style=flat-square)](https://www.espressif.com/en/products/socs/esp32-s3)
 
-### [Documentation](https://rbouteiller.github.io/airplay-esp32/) · [Install from your browser](https://rbouteiller.github.io/airplay-esp32/getting-started/flashing/) · [Troubleshooting](https://rbouteiller.github.io/airplay-esp32/troubleshooting/)
+### [Documentation](docs/index.md) · [Install from your browser](docs/getting-started/flashing.md) · [Troubleshooting](docs/troubleshooting.md)
 
 </div>
 
@@ -31,14 +31,13 @@ HomePod or an AirPlay TV.
        alt="Assembled ESP32-S3 and PCM5102A AirPlay receiver" width="720">
 </p>
 
-Works with **ESP32**, **ESP32-S2**, **ESP32-S3** and **ESP32-C5** chips, including the
-[SqueezeAMP](https://github.com/philippe44/SqueezeAMP) (ESP32 + TAS5756) and
-[Esparagus Audio Brick](https://sonocotta.com/espragus-audio-brick/) (ESP32 + TAS5825M)
-boards, which have amplifiers built in.
+Ready-to-flash releases from this fork are built and tested only for an
+**ESP32-S3 N16R8** (16 MB flash, 8 MB octal PSRAM) connected to a **PCM5102A** DAC
+with the pinout documented below.
 
-ESP32-based boards also support **Bluetooth A2DP**, so anything that can pair with a
-Bluetooth speaker can play to them when AirPlay is idle. The Esparagus Audio Brick
-additionally supports **wired Ethernet** through an optional W5500 module.
+The repository still contains build profiles inherited from the upstream project for
+other ESP32 chips and integrated audio boards. They are not tested by this fork, are not
+included in its releases and are not officially supported.
 
 **No cloud. No app. Just tap and play.**
 
@@ -46,16 +45,16 @@ additionally supports **wired Ethernet** through an optional W5500 module.
 
 The fastest route is the browser installer — no toolchain, no command line:
 
-**[→ Install from your browser](https://rbouteiller.github.io/airplay-esp32/getting-started/flashing/)**
+**[→ Install from your browser](docs/getting-started/flashing.md)**
 
-Building from parts instead? You need an ESP32-S3 dev board, a PCM5102A DAC, a
+Building from parts instead? You need an ESP32-S3 N16R8 dev board, a PCM5102A DAC, a
 six-pin straight header and basic soldering equipment, roughly $10 total. See the
 [assembly guide](docs/getting-started/assembly.md).
 
 Building from source:
 
 ```bash
-git clone --recursive https://github.com/rbouteiller/airplay-esp32
+git clone --recursive https://github.com/serverdevel/airplay-esp32
 cd airplay-esp32
 pio run -e esp32s3 -t upload
 pio run -e esp32s3 -t uploadfs   # required — writes the web UI to SPIFFS
@@ -82,8 +81,6 @@ for details.
 - **AirPlay 2** — appears natively in Control Center and every AirPlay-capable app
 - **ALAC and AAC decoding** — live streaming (Siri, calls) and music playback
 - **Multi-room** — PTP-based timing for synchronised playback
-- **Bluetooth A2DP** — receive audio from phones and tablets (ESP32 boards only)
-- **W5500 Ethernet** — wired networking with automatic WiFi failover
 - **Web configuration** and **OTA updates** — USB is only needed for the first flash
 - **48 kHz output** — optional 44.1 → 48 kHz conversion via a sinc resampler
 - **Displays** — optional OLED or 320×170 colour TFT with track metadata
@@ -95,16 +92,16 @@ Audio only, one speaker per board, and a decent WiFi signal is required.
 
 | | |
 | --- | --- |
-| [Getting started](https://rbouteiller.github.io/airplay-esp32/getting-started/) | Shopping list, assembly, flashing, first boot |
-| [Supported boards](https://rbouteiller.github.io/airplay-esp32/boards/) | SqueezeAMP, Esparagus Audio Brick, XIAO ESP32-C5, custom boards |
-| [Features](https://rbouteiller.github.io/airplay-esp32/features/bluetooth/) | Bluetooth, Ethernet, displays, buttons, AirPlay tuning |
-| [Reference](https://rbouteiller.github.io/airplay-esp32/reference/build-environments/) | Build environments, SPIFFS, OTA, architecture |
-| [Troubleshooting](https://rbouteiller.github.io/airplay-esp32/troubleshooting/) | No sound, no setup WiFi, dropouts, build errors |
+| [Getting started](docs/getting-started/index.md) | Shopping list, assembly, flashing, first boot |
+| [Hardware](docs/boards/index.md) | Official ESP32-S3 N16R8 build and unverified inherited profiles |
+| [Features](docs/features/airplay-tuning.md) | Displays, buttons and AirPlay tuning |
+| [Reference](docs/reference/build-environments.md) | Build environments, SPIFFS, OTA, architecture |
+| [Troubleshooting](docs/troubleshooting.md) | No sound, no setup WiFi, dropouts, build errors |
 
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and the
-[contributing guide](https://rbouteiller.github.io/airplay-esp32/contributing/).
+[contributing guide](docs/contributing.md).
 Documentation lives in [`docs/`](docs/) and is built with [Zensical](https://zensical.org/)
 — every page on the site has an edit link that takes you straight to the GitHub editor.
 

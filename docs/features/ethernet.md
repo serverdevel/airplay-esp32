@@ -2,6 +2,11 @@
 
 # Ethernet (W5500)
 
+!!! warning "Not part of the supported hardware"
+
+    The documented ESP32-S3 N16R8 + PCM5102A assembly has no Ethernet controller.
+    W5500 support is retained for unverified inherited board profiles only.
+
 The [Esparagus Audio Brick](../boards/esparagus-audio-brick.md) supports wired Ethernet
 through a **W5500 SPI module**, giving a reliable low-latency connection where WiFi is
 unreliable or unavailable.

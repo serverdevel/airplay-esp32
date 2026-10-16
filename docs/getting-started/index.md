@@ -15,8 +15,6 @@ flowchart LR
 
     A --> B --> C --> D --> E
 
-    OWN["Already own a<br/>supported board?"] -.->|skip ahead| C
-
     classDef done stroke:#26a69a,stroke-width:2px
     class E done
 ```
@@ -26,13 +24,8 @@ flowchart LR
 3. **[Flash the firmware](flashing.md)** — from your browser, or with PlatformIO / ESP-IDF
 4. **[First boot](first-boot.md)** — join the setup WiFi and point it at your network
 
-If you already own a [SqueezeAMP](../boards/squeezeamp.md), an
-[Esparagus Audio Brick](../boards/esparagus-audio-brick.md) or another supported board,
-skip the first two steps and go straight to [flashing](flashing.md) — those boards have a
-DAC and amplifier built in.
+!!! tip "Which exact board should I buy?"
 
-!!! tip "Which chip should I buy?"
-
-    An **ESP32-S3** is the best default: plenty of RAM, USB-C, and it is what the
-    project is developed against. Buy an **original ESP32** instead if you want
-    Bluetooth A2DP, which is not available on the S3.
+    Buy an **ESP32-S3 N16R8**: 16 MB flash and 8 MB octal PSRAM. This is the only
+    configuration covered by the ready-to-flash release. Other ESP32 variants and
+    integrated audio boards are inherited source profiles and are not tested here.

@@ -7,7 +7,7 @@ Amazon for under $10 total, excluding tools.
 
 | Component | What to search for | Price |
 | --- | --- | --- |
-| **ESP32-S3 dev board** | "ESP32-S3 N16R8" | ~$5 |
+| **ESP32-S3 N16R8 dev board** | "ESP32-S3 N16R8" — verify 16 MB flash and 8 MB octal PSRAM | ~$5 |
 | **PCM5102A DAC board** | "PCM5102A I2S DAC" — the small purple board with a 3.5 mm jack | ~$3 |
 | **Straight 2.54 mm male header** | "Male pin header 2.54mm single row" — 1×6 or longer, cut to size | ~$0.50 |
 
@@ -15,10 +15,10 @@ You also need a fine-tip soldering iron, electronics solder, a multimeter and a
 small piece of Kapton tape, electrical tape or thin PET sheet to insulate the
 3.5 mm audio jack from the underside of the ESP32.
 
-> [!TIP]
-> If you have a [SqueezeAMP](../boards/squeezeamp.md) or an
-> [Esparagus Audio Brick](../boards/esparagus-audio-brick.md), you don't need a
-> separate DAC — those boards have one built in. Just flash the matching firmware.
+> [!WARNING]
+> The ready-to-flash image is specific to **ESP32-S3 N16R8 + PCM5102A**. Do not buy a
+> generic ESP32, ESP32-S2, ESP32-C5 or an integrated audio board expecting the release
+> image to work on it.
 
 ## Check the DAC board
 

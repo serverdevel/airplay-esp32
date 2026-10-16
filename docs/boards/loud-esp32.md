@@ -2,6 +2,12 @@
 
 # Loud-ESP32, Loud-Esparagus and Esparagus Echo
 
+!!! warning "Inherited and unverified profile"
+
+    This page documents source code inherited from the upstream project. This fork does
+    not test this hardware, publish a ready-to-flash image for it or provide official
+    support. Build and validate it yourself at your own risk.
+
 The Sonocotta [Loud-ESP32](https://github.com/sonocotta/esp32-audio-dock) boards drive
 **MAX98357A** I2S amplifiers directly — no DAC in front, no I2C control port. Speakers
 connect straight to the board.
@@ -14,18 +20,18 @@ back to standby on pause. That is the same power-state handling the
 
 ## Variants
 
-| Environment | Chip | Amps | Ethernet | Display | Bluetooth | Prebuilt |
+| Environment | Chip | Amps | Ethernet | Display | Bluetooth | Release image |
 | --- | --- | :-: | :-: | :-: | :-: | :-: |
 | `loud-esp32` | ESP32 | 1 | yes | SH1106 OLED | — | — |
-| `loud-esp32-bt` | ESP32 | 1 | yes | SH1106 OLED | yes | yes |
+| `loud-esp32-bt` | ESP32 | 1 | yes | SH1106 OLED | yes | — |
 | `loud-esparagus` | ESP32 | 2 | — | — | — | — |
-| `loud-esparagus-bt` | ESP32 | 2 | — | — | yes | yes |
-| `loud-esp32-s3` | ESP32-S3 | 2 | yes | SH1106 OLED | — | yes |
-| `esparagus-echo` | ESP32-S3 | 2 | yes | — | — | yes |
+| `loud-esparagus-bt` | ESP32 | 2 | — | — | yes | — |
+| `loud-esp32-s3` | ESP32-S3 | 2 | yes | SH1106 OLED | — | — |
+| `esparagus-echo` | ESP32-S3 | 2 | yes | — | — | — |
 
 Both amplifiers share the one enable pin, so a dual-amp board mutes and unmutes as a
 unit. Bluetooth Classic exists only on the original ESP32, so neither S3 board has a
-`-bt` build; on an ESP32 the published binary is the Bluetooth one.
+`-bt` build; no variant is published by this fork.
 
 [Esparagus Echo](https://github.com/sonocotta/esparagus-echo) is the same amplifier
 arrangement on the Echo's S3 board — Ethernet, an RGB status LED and no display header.
@@ -44,10 +50,9 @@ arrangement on the Echo's S3 board — Ethernet, an RGB status LED and no displa
 
 ## Flashing
 
-=== "Browser"
+=== "Release image"
 
-    Use the Loud or Esparagus Echo installer on the
-    [flashing page](../getting-started/flashing.md).
+    No release image is published by this fork. Build and validate this profile yourself.
 
 === "PlatformIO"
 
