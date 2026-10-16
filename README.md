@@ -54,6 +54,22 @@ pio run -e esp32s3 -t upload
 pio run -e esp32s3 -t uploadfs   # required — writes the web UI to SPIFFS
 ```
 
+## 3D-printable enclosure
+
+The repository includes a printable enclosure for the ESP32-S3 + PCM5102A
+assembly and two matching rear covers. The covers have a **35 × 22 mm** outer
+face that sits flush with the enclosure.
+
+| Model | Download | Fit |
+| --- | --- | --- |
+| Enclosure | [esp32-airplay-enclosure.stl](docs/assets/3d-models/esp32-airplay-enclosure.stl) | Main body |
+| Standard rear cover | [esp32-airplay-rear-cover-standard.stl](docs/assets/3d-models/esp32-airplay-rear-cover-standard.stl) | 0.30 mm guide clearance; recommended first print |
+| Tight rear cover | [esp32-airplay-rear-cover-tight.stl](docs/assets/3d-models/esp32-airplay-rear-cover-tight.stl) | 0.20 mm guide clearance |
+
+Print the rear cover with its flat exterior face on the build plate and the
+retaining guides facing upward. See the [assembly guide](docs/getting-started/assembly.md#step-4-print-the-case-optional)
+for details.
+
 ## Features
 
 - **AirPlay 2** — appears natively in Control Center and every AirPlay-capable app

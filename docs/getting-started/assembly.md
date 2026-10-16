@@ -89,9 +89,23 @@ Plug a USB-C cable into the ESP32 for power.
 
 ## Step 4 — Print the case (optional)
 
-A 3D-printable case is provided: [`boite-esp32.stl`](../assets/boite-esp32.stl). Print it
-with standard PLA settings. The case is designed for an assembly with pins on one side
-only, as described in step 1.
+A 3D-printable enclosure and two matching rear covers are provided:
+
+| Part | STL file | Notes |
+| --- | --- | --- |
+| Enclosure | [`esp32-airplay-enclosure.stl`](../assets/3d-models/esp32-airplay-enclosure.stl) | Main body |
+| Standard rear cover | [`esp32-airplay-rear-cover-standard.stl`](../assets/3d-models/esp32-airplay-rear-cover-standard.stl) | 0.30 mm guide clearance; print this one first |
+| Tight rear cover | [`esp32-airplay-rear-cover-tight.stl`](../assets/3d-models/esp32-airplay-rear-cover-tight.stl) | 0.20 mm guide clearance for a firmer fit |
+
+The rear covers have a 35 × 22 mm outer face matching the enclosure, so the
+four outside surfaces meet flush. Print a cover with its flat exterior face on
+the build plate and its retaining guides facing upward. Standard PLA settings,
+a 0.4 mm nozzle, 0.2 mm layers and three perimeters work well; no supports are
+required for the cover.
+
+The enclosure is designed for an assembly with pins on one side only, as
+described in step 1. Actual cover fit depends on printer calibration and first
+layer expansion; use the tight version only if the standard cover is loose.
 
 ## Next
 
