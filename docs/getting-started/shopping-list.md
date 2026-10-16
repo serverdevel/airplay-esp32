@@ -9,7 +9,9 @@ Amazon for under $10 total, excluding tools.
 | **PCM5102A DAC board** | "PCM5102A I2S DAC" — the small purple board with a 3.5 mm jack | ~$3 |
 | **Straight 2.54 mm male header** | "Male pin header 2.54mm single row" — 1×6 or longer, cut to size | ~$0.50 |
 
-You also need a fine-tip soldering iron, electronics solder and a multimeter.
+You also need a fine-tip soldering iron, electronics solder, a multimeter and a
+small piece of Kapton tape, electrical tape or thin PET sheet to insulate the
+3.5 mm audio jack from the underside of the ESP32.
 
 !!! tip "Already have an amplifier board?"
 

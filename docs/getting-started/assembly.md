@@ -51,6 +51,16 @@ On the inside face, also close the small two-pad solder jumper immediately next
 to the **SCK** header pin. On this module that selects the BCK-derived clock
 arrangement used by this build; no external MCLK signal is required.
 
+Cover the metal housing of the **3.5 mm audio jack**, on the side facing the
+ESP32, with a thin insulating pad. Kapton tape, electrical tape or a thin piece
+of PET sheet works well. Keep the insulation clear of the plug opening.
+
+!!! danger "Insulate the audio jack"
+
+    Without this pad, the metal jack housing can touch solder joints or exposed
+    contacts on the underside of the ESP32 and cause a short circuit. Check that
+    the insulation remains in place when the two boards are pressed together.
+
 ## Step 3 — Join the DAC and ESP32
 
 Cut a **straight male 2.54 mm pin header** to six positions. Insert it through
