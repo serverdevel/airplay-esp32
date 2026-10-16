@@ -12,15 +12,18 @@ For the parts list and step-by-step assembly, see
 
 | Function | GPIO | PCM5102A pin |
 | --- | --- | --- |
+| System clock header position | 10 | SCK |
 | Bit clock | 11 | BCK |
 | Audio data | 12 | DIN |
-| Word select (LRCLK) | 13 | LCK |
+| Word select | 13 | LRCK |
 | Software ground | 14 | GND |
 | Power | 5V | VIN |
 
-MCLK is not needed by the PCM5102A, which generates it internally. It is nonetheless
-routed to GPIO8 by default, which is useful if you want to drive a different converter
-such as a WM8805 I2S-to-S/PDIF bridge.
+The six-pin direct-stack header physically connects SCK to GPIO10. On the
+PCM5102A module documented here, the solder bridge beside SCK is closed and the
+DAC recovers its system clock from BCK, so GPIO10 is not driven as MCLK. The
+generic firmware still routes optional MCLK to GPIO8 by default for converters
+that require it, such as a WM8805 I2S-to-S/PDIF bridge.
 
 Pins can be changed under **Board Configuration → Pin Configuration** in `menuconfig`.
 
@@ -28,6 +31,9 @@ Pins can be changed under **Board Configuration → Pin Configuration** in `menu
 
     Most ESP32-S3 boards ship with the VIN/VOUT solder pads open. Bridge them, or the
     DAC gets no 5 V power and you hear nothing.
+
+The exact header and solder-jumper procedure is shown in the
+[assembly guide](../getting-started/assembly.md).
 
 ## Flashing
 

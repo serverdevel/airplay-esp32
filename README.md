@@ -24,6 +24,11 @@ This turns a cheap ESP32 board into a wireless AirPlay 2 speaker. Plug it into a
 amplifier or powered speakers and it shows up on your iPhone, iPad or Mac just like a
 HomePod or an AirPlay TV.
 
+<p align="center">
+  <img src="docs/assets/build/esp32-pcm5102a-complete.jpg"
+       alt="Assembled ESP32-S3 and PCM5102A AirPlay receiver" width="720">
+</p>
+
 Works with **ESP32**, **ESP32-S2**, **ESP32-S3** and **ESP32-C5** chips, including the
 [SqueezeAMP](https://github.com/philippe44/SqueezeAMP) (ESP32 + TAS5756) and
 [Esparagus Audio Brick](https://sonocotta.com/espragus-audio-brick/) (ESP32 + TAS5825M)
@@ -41,9 +46,9 @@ The fastest route is the browser installer — no toolchain, no command line:
 
 **[→ Install from your browser](https://rbouteiller.github.io/airplay-esp32/getting-started/flashing/)**
 
-Building from parts instead? You need an ESP32-S3 dev board, a PCM5102A DAC and a female
-pin header, roughly $10 total, and no soldering. See the
-[getting started guide](https://rbouteiller.github.io/airplay-esp32/getting-started/).
+Building from parts instead? You need an ESP32-S3 dev board, a PCM5102A DAC, a
+six-pin straight header and basic soldering equipment, roughly $10 total. See the
+[assembly guide](docs/getting-started/assembly.md).
 
 Building from source:
 
@@ -67,7 +72,7 @@ face that sits flush with the enclosure.
 | Tight rear cover | [esp32-airplay-rear-cover-tight.stl](docs/assets/3d-models/esp32-airplay-rear-cover-tight.stl) | 0.20 mm guide clearance |
 
 Print the rear cover with its flat exterior face on the build plate and the
-retaining guides facing upward. See the [assembly guide](docs/getting-started/assembly.md#step-4-print-the-case-optional)
+retaining guides facing upward. See the [assembly guide](docs/getting-started/assembly.md#step-5-print-the-case-optional)
 for details.
 
 ## Features

@@ -6,7 +6,7 @@ which is waiting for a firmware flash.
 ```mermaid
 flowchart LR
     A["1. Shopping list<br/><small>~$10, two boards</small>"]
-    B["2. Assembly<br/><small>no soldering</small>"]
+    B["2. Assembly<br/><small>basic soldering</small>"]
     C["3. Flash<br/><small>from your browser</small>"]
     D["4. First boot<br/><small>join setup WiFi</small>"]
     E(["Playing music"])
@@ -20,7 +20,7 @@ flowchart LR
 ```
 
 1. **[Shopping list](shopping-list.md)** — two boards and a pin header, roughly $10
-2. **[Assembly](assembly.md)** — the DAC plugs straight onto the ESP32, no soldering
+2. **[Assembly](assembly.md)** — solder the DAC directly below the ESP32
 3. **[Flash the firmware](flashing.md)** — from your browser, or with PlatformIO / ESP-IDF
 4. **[First boot](first-boot.md)** — join the setup WiFi and point it at your network
 

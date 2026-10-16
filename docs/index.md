@@ -60,8 +60,8 @@ No cloud. No app. Just tap and play.
 ## What you are building
 
 <figure markdown>
-  ![An ESP32-S3 with a PCM5102A DAC plugged onto it, forming a small stacked board with a 3.5 mm jack](assets/ESP_PCM_front.png){ width="240" }
-  <figcaption>Two boards, one pin header, no soldering — the 3.5 mm jack goes to your amplifier</figcaption>
+  ![An assembled ESP32-S3 and PCM5102A AirPlay receiver with a 3.5 mm jack](assets/build/esp32-pcm5102a-complete.jpg){ width="600" }
+  <figcaption>Two boards and one soldered pin header — the 3.5 mm jack goes to your amplifier</figcaption>
 </figure>
 
 ## How it works in 30 seconds
@@ -94,7 +94,7 @@ amplifier boards:
 - [SqueezeAMP](boards/squeezeamp.md) — ESP32 + TAS5756 DAC and Class-D amplifier
 - [Esparagus Audio Brick](boards/esparagus-audio-brick.md) — ESP32 or ESP32-S3 + TAS58xx DAC/amp, on-chip DSP, Ethernet
 - [Esparagus Audio Brick Dual](boards/esparagus-audio-brick-dual-dac.md) — ESP32-S3 + two amplifiers, active crossover, USB audio
-- [ESP32-S3 + PCM5102A](boards/esp32s3-pcm5102a.md) — the cheapest route, no soldering required
+- [ESP32-S3 + PCM5102A](boards/esp32s3-pcm5102a.md) — the cheapest route; basic soldering required
 
 ESP32-based boards additionally support **Bluetooth A2DP**, so anything that can pair with
 a Bluetooth speaker can play to them when AirPlay is idle.
