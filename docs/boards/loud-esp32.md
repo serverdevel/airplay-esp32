@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/boards/loud-esp32.md)
+
 # Loud-ESP32, Loud-Esparagus and Esparagus Echo
 
 The Sonocotta [Loud-ESP32](https://github.com/sonocotta/esp32-audio-dock) boards drive

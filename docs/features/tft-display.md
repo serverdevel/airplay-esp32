@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/features/tft-display.md)
+
 # ST7789 TFT display
 
 A 1.9" 320×170 colour IPS display can show track metadata over a full-colour bitmap

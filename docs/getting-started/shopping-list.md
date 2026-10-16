@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/getting-started/shopping-list.md)
+
 # Shopping list
 
 You need two boards and a short pin header. Everything is available on AliExpress or

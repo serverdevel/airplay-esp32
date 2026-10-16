@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/getting-started/first-boot.md)
+
 # First boot
 
 On its first start the device has no WiFi credentials, so it brings up its own network and

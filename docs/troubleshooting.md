@@ -1,3 +1,5 @@
+**English** | [Русский](ru/troubleshooting.md)
+
 # Troubleshooting
 
 Organised by symptom. Most reports fall into the first three sections.

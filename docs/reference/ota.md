@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/reference/ota.md)
+
 # OTA updates
 
 Once the device is on your network you can update its firmware over WiFi without

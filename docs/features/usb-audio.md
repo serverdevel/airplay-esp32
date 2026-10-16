@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/features/usb-audio.md)
+
 # USB audio (UAC)
 
 Boards with a USB OTG port can present themselves to an attached computer as a **stereo USB

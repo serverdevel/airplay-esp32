@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/boards/louder-esp32.md)
+
 # Louder-ESP32 and Louder-ESP32-Plus
 
 The Sonocotta [Louder-ESP32](https://github.com/sonocotta/esp32-audio-dock) boards carry a

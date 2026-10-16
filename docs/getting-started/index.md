@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/getting-started/index.md)
+
 # Getting started
 
 Building an AirPlay speaker from scratch takes four steps and about half an hour, most of

@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/features/ethernet.md)
+
 # Ethernet (W5500)
 
 The [Esparagus Audio Brick](../boards/esparagus-audio-brick.md) supports wired Ethernet

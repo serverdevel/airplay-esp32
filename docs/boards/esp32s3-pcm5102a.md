@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/boards/esp32s3-pcm5102a.md)
+
 # ESP32-S3 + PCM5102A
 
 The cheapest and most common build: a generic ESP32-S3 dev board with an external

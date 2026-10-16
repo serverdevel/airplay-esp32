@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/reference/spiffs.md)
+
 # SPIFFS filesystem
 
 The firmware keeps its web pages and DAC configuration files on a **SPIFFS partition** in

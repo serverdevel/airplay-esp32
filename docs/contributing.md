@@ -1,3 +1,5 @@
+**English** | [Русский](ru/contributing.md)
+
 # Contributing
 
 ## Requirements

@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/features/airplay-tuning.md)
+
 # AirPlay tuning
 
 Advanced timing and metadata options live under **AirPlay Receiver → AirPlay Protocol** in

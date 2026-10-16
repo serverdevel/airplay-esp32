@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/features/oled-display.md)
+
 # OLED display
 
 A small OLED screen can show the currently playing track: title, artist, album, a progress

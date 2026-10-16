@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/boards/squeezeamp.md)
+
 # SqueezeAMP
 
 The [SqueezeAMP](https://github.com/philippe44/SqueezeAMP) is an ESP32 board with a

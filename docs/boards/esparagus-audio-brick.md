@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/boards/esparagus-audio-brick.md)
+
 # Esparagus Audio Brick
 
 The [Esparagus Audio Brick](https://github.com/sonocotta/esparagus-media-center/?tab=readme-ov-file#esparagus-audio-brick-prototype)

@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/features/hybridflow.md)
+
 # HybridFlow DSP (TAS57xx)
 
 Some TAS57xx amplifiers carry a small DSP core — TI calls it the miniDSP — that can run a

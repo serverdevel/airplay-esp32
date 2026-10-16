@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/features/bluetooth.md)
+
 # Bluetooth A2DP
 
 ESP32-based boards can receive audio over **Bluetooth Classic A2DP**, letting any phone,

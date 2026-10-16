@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/reference/architecture.md)
+
 # Architecture
 
 ## Signal flow

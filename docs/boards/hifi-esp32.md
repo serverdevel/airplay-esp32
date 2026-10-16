@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/boards/hifi-esp32.md)
+
 # HiFi-ESP32 and HiFi-Esparagus
 
 The Sonocotta [HiFi-ESP32](https://github.com/sonocotta/esp32-audio-dock) boards pair an

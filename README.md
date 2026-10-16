@@ -1,3 +1,5 @@
+**English** | [Русский](README-RU.md)
+
 <div align="center">
 
 <img src="docs/assets/logo_airplay_esp32.png" alt="AirPlay ESP32" width="400">

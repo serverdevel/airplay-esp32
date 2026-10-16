@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/boards/custom.md)
+
 # Custom board configuration
 
 If you are porting to your own hardware, you can define a custom build environment without

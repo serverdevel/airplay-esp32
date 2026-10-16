@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/getting-started/flashing.md)
+
 # Flash the firmware
 
 There are three ways to get firmware onto the board. If you have no reason to prefer

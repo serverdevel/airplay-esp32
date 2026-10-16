@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/reference/build-environments.md)
+
 # Build environments
 
 Every PlatformIO environment defined in `platformio.ini`. The default is `esp32s3`.

@@ -4,6 +4,8 @@ hide:
   - navigation
 ---
 
+**English** | [Русский](ru/index.md)
+
 # ESP32 AirPlay 2 Receiver
 
 **Stream music from your Apple devices — or from any phone over Bluetooth — to any speaker, for about $10.**

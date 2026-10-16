@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/boards/index.md)
+
 # Supported boards
 
 Pick the page matching your hardware. If you are building from parts rather than using an

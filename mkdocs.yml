@@ -134,3 +134,40 @@ nav:
       - Architecture: reference/architecture.md
   - Troubleshooting: troubleshooting.md
   - Contributing: contributing.md
+  - Русский:
+      - Главная: ru/index.md
+      - Начало работы:
+          - ru/getting-started/index.md
+          - Что купить: ru/getting-started/shopping-list.md
+          - Сборка: ru/getting-started/assembly.md
+          - Установка прошивки: ru/getting-started/flashing.md
+          - Первый запуск: ru/getting-started/first-boot.md
+      - Платы:
+          - ru/boards/index.md
+          - ESP32-S3 + PCM5102A: ru/boards/esp32s3-pcm5102a.md
+          - SqueezeAMP: ru/boards/squeezeamp.md
+          - Esparagus Audio Brick: ru/boards/esparagus-audio-brick.md
+          - Esparagus Audio Brick Dual: ru/boards/esparagus-audio-brick-dual-dac.md
+          - HiFi-ESP32: ru/boards/hifi-esp32.md
+          - Loud-ESP32 и Esparagus Echo: ru/boards/loud-esp32.md
+          - Amped-ESP32: ru/boards/amped-esp32.md
+          - Louder-ESP32: ru/boards/louder-esp32.md
+          - Seeed XIAO ESP32-C5: ru/boards/xiao-esp32c5.md
+          - Пользовательская плата: ru/boards/custom.md
+      - Возможности:
+          - Bluetooth A2DP: ru/features/bluetooth.md
+          - USB-аудио (UAC): ru/features/usb-audio.md
+          - Sendspin (экспериментально): ru/features/sendspin.md
+          - Ethernet (W5500): ru/features/ethernet.md
+          - OLED-дисплей: ru/features/oled-display.md
+          - TFT-дисплей ST7789: ru/features/tft-display.md
+          - Аппаратные кнопки: ru/features/buttons.md
+          - HybridFlow DSP (TAS57xx): ru/features/hybridflow.md
+          - Настройка AirPlay: ru/features/airplay-tuning.md
+      - Справочник:
+          - Среды сборки: ru/reference/build-environments.md
+          - Файловая система SPIFFS: ru/reference/spiffs.md
+          - Обновления OTA: ru/reference/ota.md
+          - Архитектура: ru/reference/architecture.md
+      - Устранение неполадок: ru/troubleshooting.md
+      - Участие в разработке: ru/contributing.md

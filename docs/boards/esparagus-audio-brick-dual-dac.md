@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/boards/esparagus-audio-brick-dual-dac.md)
+
 # Esparagus Audio Brick Dual
 
 The **Audio Brick Dual** is an **ESP32-S3** [Esparagus Audio Brick](esparagus-audio-brick.md)

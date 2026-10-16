@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/features/buttons.md)
+
 # Hardware buttons
 
 Physical buttons can control playback directly from the device, with no phone involved.

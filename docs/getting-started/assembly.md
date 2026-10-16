@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/getting-started/assembly.md)
+
 # Assembly
 
 This compact build solders a PCM5102A directly below the ESP32-S3 through a

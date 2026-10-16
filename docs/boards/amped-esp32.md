@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/boards/amped-esp32.md)
+
 # Amped-ESP32 and Amped-Esparagus
 
 The Sonocotta [Amped-ESP32](https://github.com/sonocotta/esp32-audio-dock) boards put a

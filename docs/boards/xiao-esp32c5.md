@@ -1,3 +1,5 @@
+**English** | [Русский](../ru/boards/xiao-esp32c5.md)
+
 # Seeed XIAO ESP32-C5
 
 The Seeed XIAO ESP32-C5 is a RISC-V board with 8 MB flash, 8 MB PSRAM and **dual-band
