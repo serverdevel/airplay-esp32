@@ -153,6 +153,13 @@ void audio_receiver_pause(void);
 void audio_receiver_set_playout_latency_samples(uint32_t latency_samples);
 
 /**
+ * Set/get manual multi-room playout calibration in milliseconds.
+ * Positive values play later; negative values play earlier.
+ */
+void audio_receiver_set_sync_offset_ms(int32_t offset_ms);
+int32_t audio_receiver_get_sync_offset_ms(void);
+
+/**
  * Set advertised/target output latency in microseconds.
  */
 void audio_receiver_set_output_latency_us(uint32_t latency_us);

@@ -118,6 +118,7 @@ idf_component_register(
     SRCS ${SRC_FILES}
     INCLUDE_DIRS ${INC_DIRS}
     PRIV_REQUIRES ${DEPS}
+    EMBED_TXTFILES "${CMAKE_SOURCE_DIR}/data/www/index.html"
 )
 
 # Enable function wrapping for abort() to intercept panics and mute GPIO

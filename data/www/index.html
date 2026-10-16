@@ -16,7 +16,7 @@ body{font-family:-apple-system,system-ui,sans-serif;background:linear-gradient(1
 .card h2{font-size:16px;font-weight:600;margin-bottom:16px;color:#e94560}
 .form-group{margin-bottom:14px}
 .form-group label{display:block;font-size:12px;color:#888;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
-input[type=text],input[type=password]{width:100%;padding:12px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:14px}
+input[type=text],input[type=password],input[type=number]{width:100%;padding:12px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:14px}
 input:focus{outline:none;border-color:#e94560}
 .btn{display:inline-block;padding:12px 20px;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s}
 .btn-primary{background:#e94560;color:#fff}
@@ -47,6 +47,11 @@ input:focus{outline:none;border-color:#e94560}
 .slider-row{display:flex;align-items:center;gap:12px}
 .slider-row input[type=range]{flex:1;accent-color:#e94560}
 .slider-row span{font-size:13px;color:#888;min-width:32px;text-align:right}
+.sync-row{display:flex;align-items:center;gap:10px}
+.sync-row input[type=range]{flex:1;accent-color:#e94560;min-width:0}
+.sync-row input[type=number]{width:92px;text-align:right}
+.sync-value{font-size:20px;font-weight:600;margin:10px 0 4px;color:#fff}
+.hint{color:#888;font-size:13px;line-height:1.45}
 </style></head><body>
 <div class='wrap'>
 <div class='header'><h1>AirPlay Receiver</h1><p>ESP32 Configuration Panel</p></div>
@@ -86,6 +91,18 @@ input:focus{outline:none;border-color:#e94560}
 <div id='eq-link' style='display:none;margin-top:18px'>
 <a href='/eq' class='btn btn-secondary'>EQ Settings</a></div>
 </div>
+<div class='card'><h2>AirPlay Synchronization</h2>
+<p class='hint'>Adjust this receiver relative to HomePod. The change is applied immediately and saved after reboot.</p>
+<div class='sync-value' id='sync-current'>0 ms</div>
+<div class='form-group'><label for='sync-offset-range'>Playback Offset</label>
+<div class='sync-row'>
+<input type='range' id='sync-offset-range' min='-1000' max='1000' step='1' value='0' oninput='syncRangeChanged()'>
+<input type='number' id='sync-offset-number' min='-1000' max='1000' step='1' value='0' oninput='syncNumberChanged()'>
+<span>ms</span></div></div>
+<p class='hint'><strong>Positive</strong> values make the theater play later. <strong>Negative</strong> values make it play earlier. A live change may cause one short gap or skip while playback re-locks.</p>
+<div class='actions'><button class='btn btn-primary' onclick='saveSyncOffset()'>Apply</button>
+<button class='btn btn-secondary' onclick='resetSyncOffset()'>Reset to 0</button></div>
+<div id='sync-msg'></div></div>
 <div class='card'><h2>Firmware Update</h2>
 <div class='file-row'><input type='file' id='fw-file' accept='.bin' style='display:none'>
 <button class='btn btn-secondary' onclick='document.getElementById("fw-file").click()'>Choose File</button>
@@ -186,6 +203,30 @@ async function saveChannel(){
       chanLocked=!!d.locked;applyAmpLayout();}
     else{msg('chan-msg',d.error,'err');}}
   catch(e){msg('chan-msg','Error','err');console.error('saveChannel failed',e);}}
+function setSyncControls(value){
+  var v=Number(value);if(!Number.isFinite(v)){v=0;}v=Math.max(-1000,Math.min(1000,Math.round(v)));
+  document.getElementById('sync-offset-range').value=String(v);
+  document.getElementById('sync-offset-number').value=String(v);
+  document.getElementById('sync-current').textContent=(v>0?'+':'')+v+' ms';
+  return v;}
+function syncRangeChanged(){setSyncControls(document.getElementById('sync-offset-range').value);}
+function syncNumberChanged(){
+  var e=document.getElementById('sync-offset-number');if(e.value==='')return;
+  setSyncControls(e.value);}
+async function loadSyncOffset(){
+  try{var r=await fetch('/api/audio/sync');var d=await r.json();
+    if(d.success){var range=document.getElementById('sync-offset-range');var num=document.getElementById('sync-offset-number');
+      if(typeof d.min_ms==='number'){range.min=String(d.min_ms);num.min=String(d.min_ms);}
+      if(typeof d.max_ms==='number'){range.max=String(d.max_ms);num.max=String(d.max_ms);}
+      setSyncControls(d.offset_ms);}}
+  catch(e){msg('sync-msg','Could not load synchronization setting','err');}}
+async function saveSyncOffset(){
+  var v=setSyncControls(document.getElementById('sync-offset-number').value);
+  try{var r=await fetch('/api/audio/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({offset_ms:v})});
+    var d=await r.json();if(d.success){setSyncControls(d.offset_ms);msg('sync-msg','Saved and applied live.','ok');}
+    else{msg('sync-msg',d.error||'Invalid value','err');}}
+  catch(e){msg('sync-msg','Error','err');console.error('saveSyncOffset failed',e);}}
+function resetSyncOffset(){setSyncControls(0);saveSyncOffset();}
 async function loadDual(){
   try{var r=await fetch('/api/audio/dual');if(!r.ok)return;var d=await r.json();
     if(d.success&&d.devices>1){dualDevices=d.devices;dualMode=d.mode;
@@ -257,5 +298,5 @@ window.onload=function(){
   document.getElementById('fw-file').onchange=function(e){var f=e.target.files[0];
     document.getElementById('fw-name').textContent=f?f.name:'No file selected';
     document.getElementById('ota-btn').disabled=!f;};
-  loadInfo();loadBrightness();loadChannel();setInterval(loadInfo,30000);};
+  loadInfo();loadBrightness();loadChannel();loadSyncOffset();setInterval(loadInfo,30000);};
 </script></body></html>

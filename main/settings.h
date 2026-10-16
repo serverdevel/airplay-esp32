@@ -2,6 +2,7 @@
 
 #include "esp_err.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 /**
  * Persistent settings storage (NVS)
@@ -172,6 +173,18 @@ esp_err_t settings_get_channel_mode(uint8_t *mode);
  * @param mode audio_channel_mode_t value
  */
 esp_err_t settings_set_channel_mode(uint8_t mode);
+
+// ---- Multi-room synchronization ----
+
+#define SETTINGS_SYNC_OFFSET_MIN_MS (-1000)
+#define SETTINGS_SYNC_OFFSET_MAX_MS 1000
+
+/**
+ * Get/save manual AirPlay playout calibration in milliseconds.
+ * Positive values play later; negative values play earlier.
+ */
+esp_err_t settings_get_sync_offset_ms(int32_t *offset_ms);
+esp_err_t settings_set_sync_offset_ms(int32_t offset_ms);
 
 // ---- Sub level offset ----
 

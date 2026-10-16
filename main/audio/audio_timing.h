@@ -36,6 +36,10 @@ typedef struct {
   // survives audio_timing_reset() because it is stream configuration, not
   // playback state.
   uint32_t playout_latency_samples;
+  // User calibration applied to every anchor-derived playout target.
+  // Positive values make this receiver play later; negative values make it
+  // play earlier. Kept in milliseconds because that is the web/API unit.
+  int32_t sync_offset_ms;
   // Counts played frames so the periodic playout report can be rate-limited.
   uint32_t playout_reports;
   // RTP continuity tracking.  expected_rtp is the timestamp the NEXT frame
@@ -113,6 +117,10 @@ uint32_t audio_timing_get_advertised_latency(const audio_timing_t *timing);
 // Set the stream playout latency (samples).  See playout_latency_samples.
 void audio_timing_set_playout_latency(audio_timing_t *timing,
                                       uint32_t latency_samples);
+// Set/get user multi-room calibration. Values are clamped to +/-1000 ms.
+void audio_timing_set_sync_offset_ms(audio_timing_t *timing,
+                                     int32_t offset_ms);
+int32_t audio_timing_get_sync_offset_ms(const audio_timing_t *timing);
 void audio_timing_set_anchor(audio_timing_t *timing,
                              const audio_format_t *format, uint64_t clock_id,
                              uint64_t network_time_ns, uint32_t rtp_time);

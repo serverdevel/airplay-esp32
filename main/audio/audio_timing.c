@@ -16,6 +16,8 @@
 // timing check "on time" but actually exit the speaker several ms later.
 #define PIPELINE_LATENCY_US 5000 // ~5ms scheduling + write delay
 #define MIN_STARTUP_FRAMES  4
+#define SYNC_OFFSET_MIN_MS  (-1000)
+#define SYNC_OFFSET_MAX_MS  1000
 
 // Position servo: corrects small standing playout offsets by trimming or
 // duplicating single samples.  Residual position errors arise from
@@ -185,6 +187,13 @@ static bool compute_early_us(const audio_timing_t *timing,
     break;
   }
 
+  // Manual acoustic calibration for external amplifiers/AVRs.  Apply it to
+  // the frame deadline itself so both signs work: a positive value holds the
+  // frame longer, while a negative value drains ahead to an earlier point on
+  // the sender timeline.  AirPlay 2 normally sends enough audio ahead for the
+  // full negative range to remain inside the receiver buffer.
+  target_ns += (int64_t)timing->sync_offset_ms * 1000000LL;
+
   // Subtract the output pipeline delay: the time between this call handing a
   // sample to the backend and that sample leaving the DAC.
   //
@@ -340,6 +349,30 @@ void audio_timing_set_playout_latency(audio_timing_t *timing,
     return;
   }
   timing->playout_latency_samples = latency_samples;
+}
+
+void audio_timing_set_sync_offset_ms(audio_timing_t *timing,
+                                     int32_t offset_ms) {
+  if (!timing) {
+    return;
+  }
+  if (offset_ms < SYNC_OFFSET_MIN_MS) {
+    offset_ms = SYNC_OFFSET_MIN_MS;
+  } else if (offset_ms > SYNC_OFFSET_MAX_MS) {
+    offset_ms = SYNC_OFFSET_MAX_MS;
+  }
+  timing->sync_offset_ms = offset_ms;
+
+  // A live target jump must not leave the position servo integrating the old
+  // error. RTP continuity is intentionally preserved; only servo state is
+  // reset so the early/late gates perform one clean re-lock.
+  timing->pos_err_filtered_us = 0;
+  timing->servo_engaged = false;
+  timing->servo_phase = 0;
+}
+
+int32_t audio_timing_get_sync_offset_ms(const audio_timing_t *timing) {
+  return timing ? timing->sync_offset_ms : 0;
 }
 
 void audio_timing_set_anchor(audio_timing_t *timing,

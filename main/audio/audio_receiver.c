@@ -15,6 +15,7 @@
 #include "audio_stream.h"
 #include "audio_timing.h"
 #include "ptp_clock.h"
+#include "settings.h"
 
 #define DEFAULT_SAMPLE_RATE     44100
 #define DEFAULT_CHANNELS        2
@@ -119,6 +120,12 @@ esp_err_t audio_receiver_init(void) {
       ((size_t)MAX_SAMPLES_PER_FRAME * AUDIO_MAX_CHANNELS * sizeof(int16_t));
   audio_timing_init(&receiver.timing, pending_capacity);
   audio_timing_set_format(&receiver.timing, &receiver.stream->format);
+  int32_t sync_offset_ms = 0;
+  if (settings_get_sync_offset_ms(&sync_offset_ms) == ESP_OK) {
+    audio_timing_set_sync_offset_ms(&receiver.timing, sync_offset_ms);
+  }
+  ESP_LOGI(TAG, "Multi-room sync offset: %ld ms",
+           (long)audio_timing_get_sync_offset_ms(&receiver.timing));
 
   receiver.buffered_listen_socket = -1;
   receiver.buffered_client_socket = -1;
@@ -169,6 +176,16 @@ void audio_receiver_set_encryption(const audio_encrypt_t *encrypt) {
 
 void audio_receiver_set_playout_latency_samples(uint32_t latency_samples) {
   audio_timing_set_playout_latency(&receiver.timing, latency_samples);
+}
+
+void audio_receiver_set_sync_offset_ms(int32_t offset_ms) {
+  audio_timing_set_sync_offset_ms(&receiver.timing, offset_ms);
+  ESP_LOGI(TAG, "Multi-room sync offset applied live: %ld ms",
+           (long)audio_timing_get_sync_offset_ms(&receiver.timing));
+}
+
+int32_t audio_receiver_get_sync_offset_ms(void) {
+  return audio_timing_get_sync_offset_ms(&receiver.timing);
 }
 
 void audio_receiver_set_output_latency_us(uint32_t latency_us) {

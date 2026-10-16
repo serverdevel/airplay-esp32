@@ -27,6 +27,7 @@ static const char *TAG = "settings";
 #define NVS_KEY_BIAMP_SWAP     "ba_swap"
 #define NVS_KEY_BIAMP_EQ       "ba_eq"
 #define NVS_KEY_DUAL_MODE      "dual_mode"
+#define NVS_KEY_SYNC_OFFSET    "sync_off_ms"
 
 #define MAX_WIFI_SSID_LEN     32
 #define MAX_WIFI_PASSWORD_LEN 64
@@ -520,6 +521,51 @@ esp_err_t settings_set_channel_mode(uint8_t mode) {
     ESP_LOGI(TAG, "Saved channel mode: %d", mode);
   } else {
     ESP_LOGE(TAG, "Failed to save channel mode: %s", esp_err_to_name(err));
+  }
+  return err;
+}
+
+/* ================================================================== */
+/*  Multi-room synchronization offset                                 */
+/* ================================================================== */
+
+esp_err_t settings_get_sync_offset_ms(int32_t *offset_ms) {
+  if (!offset_ms) {
+    return ESP_ERR_INVALID_ARG;
+  }
+
+  nvs_handle_t nvs;
+  esp_err_t err = nvs_open(NVS_NAMESPACE, NVS_READONLY, &nvs);
+  if (err != ESP_OK) {
+    return ESP_ERR_NOT_FOUND;
+  }
+  err = nvs_get_i32(nvs, NVS_KEY_SYNC_OFFSET, offset_ms);
+  nvs_close(nvs);
+  return err;
+}
+
+esp_err_t settings_set_sync_offset_ms(int32_t offset_ms) {
+  if (offset_ms < SETTINGS_SYNC_OFFSET_MIN_MS ||
+      offset_ms > SETTINGS_SYNC_OFFSET_MAX_MS) {
+    return ESP_ERR_INVALID_ARG;
+  }
+
+  nvs_handle_t nvs;
+  esp_err_t err = nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvs);
+  if (err != ESP_OK) {
+    ESP_LOGE(TAG, "Failed to open NVS: %s", esp_err_to_name(err));
+    return err;
+  }
+  err = nvs_set_i32(nvs, NVS_KEY_SYNC_OFFSET, offset_ms);
+  if (err == ESP_OK) {
+    err = nvs_commit(nvs);
+  }
+  nvs_close(nvs);
+
+  if (err == ESP_OK) {
+    ESP_LOGI(TAG, "Saved multi-room sync offset: %ld ms", (long)offset_ms);
+  } else {
+    ESP_LOGE(TAG, "Failed to save sync offset: %s", esp_err_to_name(err));
   }
   return err;
 }

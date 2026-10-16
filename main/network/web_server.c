@@ -20,6 +20,7 @@
 #include "log_stream.h"
 #include "rtsp_server.h"
 #include "audio_output.h"
+#include "audio_receiver.h"
 #include "hap.h"
 #include "mdns_airplay.h"
 #include "esp_app_desc.h"
@@ -68,6 +69,11 @@ static httpd_handle_t s_server = NULL;
 
 #define SPIFFS_CHUNK_SIZE 1024
 
+// Keep the configuration page inside the application image as well as in the
+// SPIFFS image.  This makes an ordinary firmware OTA sufficient when the page
+// gains controls for new application APIs.
+extern const uint8_t index_html_start[] asm("_binary_index_html_start");
+
 static esp_err_t serve_spiffs_file(httpd_req_t *req, const char *path,
                                    const char *content_type) {
   FILE *f = fopen(path, "r");
@@ -93,7 +99,10 @@ static esp_err_t serve_spiffs_file(httpd_req_t *req, const char *path,
 
 // API handlers
 static esp_err_t root_handler(httpd_req_t *req) {
-  return serve_spiffs_file(req, "/spiffs/www/index.html", "text/html");
+  httpd_resp_set_type(req, "text/html");
+  httpd_resp_set_hdr(req, "Cache-Control", "no-store");
+  return httpd_resp_send(req, (const char *)index_html_start,
+                         HTTPD_RESP_USE_STRLEN);
 }
 
 static esp_err_t favicon_handler(httpd_req_t *req) {
@@ -477,6 +486,65 @@ static esp_err_t channel_mode_post_handler(httpd_req_t *req) {
   } else {
     cJSON_AddBoolToObject(response, "success", false);
     cJSON_AddStringToObject(response, "error", "Expected {\"mode\": 0-3}");
+  }
+
+  char *json_str = cJSON_Print(response);
+  httpd_resp_set_type(req, "application/json");
+  httpd_resp_send(req, json_str, HTTPD_RESP_USE_STRLEN);
+  free(json_str);
+  cJSON_Delete(json);
+  cJSON_Delete(response);
+  return ESP_OK;
+}
+
+static esp_err_t sync_offset_get_handler(httpd_req_t *req) {
+  cJSON *json = cJSON_CreateObject();
+  cJSON_AddNumberToObject(json, "offset_ms",
+                          audio_receiver_get_sync_offset_ms());
+  cJSON_AddNumberToObject(json, "min_ms", SETTINGS_SYNC_OFFSET_MIN_MS);
+  cJSON_AddNumberToObject(json, "max_ms", SETTINGS_SYNC_OFFSET_MAX_MS);
+  cJSON_AddBoolToObject(json, "success", true);
+  char *json_str = cJSON_Print(json);
+  httpd_resp_set_type(req, "application/json");
+  httpd_resp_send(req, json_str, HTTPD_RESP_USE_STRLEN);
+  free(json_str);
+  cJSON_Delete(json);
+  return ESP_OK;
+}
+
+static esp_err_t sync_offset_post_handler(httpd_req_t *req) {
+  char *content = recv_body(req, 128);
+  if (!content) {
+    httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "Invalid body");
+    return ESP_FAIL;
+  }
+
+  cJSON *json = cJSON_Parse(content);
+  free(content);
+  if (!json) {
+    httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "Invalid JSON");
+    return ESP_FAIL;
+  }
+
+  cJSON *response = cJSON_CreateObject();
+  cJSON *val = cJSON_GetObjectItem(json, "offset_ms");
+  if (!json_int_in_range(val, SETTINGS_SYNC_OFFSET_MIN_MS,
+                         SETTINGS_SYNC_OFFSET_MAX_MS)) {
+    cJSON_AddBoolToObject(response, "success", false);
+    cJSON_AddStringToObject(response, "error",
+                            "Expected integer offset_ms from -1000 to 1000");
+  } else {
+    int32_t offset_ms = val->valueint;
+    esp_err_t err = settings_set_sync_offset_ms(offset_ms);
+    if (err == ESP_OK) {
+      audio_receiver_set_sync_offset_ms(offset_ms);
+      cJSON_AddBoolToObject(response, "success", true);
+      cJSON_AddNumberToObject(response, "offset_ms",
+                              audio_receiver_get_sync_offset_ms());
+    } else {
+      cJSON_AddBoolToObject(response, "success", false);
+      cJSON_AddStringToObject(response, "error", esp_err_to_name(err));
+    }
   }
 
   char *json_str = cJSON_Print(response);
@@ -1332,6 +1400,7 @@ esp_err_t web_server_start(uint16_t port) {
   config.lru_purge_enable = true; // Reclaim stale sockets when all are in use
   config.max_uri_handlers =
       31; // Room for captive portal + Home + EQ + speedtest + audio settings
+  config.max_uri_handlers += 2; // multi-room sync offset get/post
 #ifdef DAC_HAS_SUB_OFFSET
   config.max_uri_handlers += 2; // sub level get/post
 #endif
@@ -1416,6 +1485,16 @@ esp_err_t web_server_start(uint16_t port) {
                                        .method = HTTP_POST,
                                        .handler = channel_mode_post_handler};
   httpd_register_uri_handler(s_server, &channel_mode_post_uri);
+
+  httpd_uri_t sync_offset_get_uri = {.uri = "/api/audio/sync",
+                                     .method = HTTP_GET,
+                                     .handler = sync_offset_get_handler};
+  httpd_register_uri_handler(s_server, &sync_offset_get_uri);
+
+  httpd_uri_t sync_offset_post_uri = {.uri = "/api/audio/sync",
+                                      .method = HTTP_POST,
+                                      .handler = sync_offset_post_handler};
+  httpd_register_uri_handler(s_server, &sync_offset_post_uri);
 
 #ifdef DAC_HAS_SUB_OFFSET
   httpd_uri_t sub_offset_get_uri = {.uri = "/api/audio/sub",
