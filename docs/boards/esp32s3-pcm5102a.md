@@ -27,10 +27,9 @@ that require it, such as a WM8805 I2S-to-S/PDIF bridge.
 
 Pins can be changed under **Board Configuration → Pin Configuration** in `menuconfig`.
 
-!!! warning "Bridge VIN/VOUT"
-
-    Most ESP32-S3 boards ship with the VIN/VOUT solder pads open. Bridge them, or the
-    DAC gets no 5 V power and you hear nothing.
+> [!WARNING]
+> **Bridge VIN/VOUT.** Most ESP32-S3 boards ship with the VIN/VOUT solder pads
+> open. Bridge them, or the DAC gets no 5 V power and you hear nothing.
 
 The exact header and solder-jumper procedure is shown in the
 [assembly guide](../getting-started/assembly.md).

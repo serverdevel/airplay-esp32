@@ -59,10 +59,12 @@ No cloud. No app. Just tap and play.
 
 ## What you are building
 
-<figure markdown>
-  ![An assembled ESP32-S3 and PCM5102A AirPlay receiver with a 3.5 mm jack](assets/build/esp32-pcm5102a-complete.jpg){ width="600" }
-  <figcaption>Two boards and one soldered pin header — the 3.5 mm jack goes to your amplifier</figcaption>
-</figure>
+<p align="center">
+  <img src="assets/build/esp32-pcm5102a-complete.jpg"
+       alt="An assembled ESP32-S3 and PCM5102A AirPlay receiver with a 3.5 mm jack"
+       width="600"><br>
+  <em>Two boards and one soldered pin header — the 3.5 mm jack goes to your amplifier</em>
+</p>
 
 ## How it works in 30 seconds
 

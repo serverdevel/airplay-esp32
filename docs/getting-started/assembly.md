@@ -4,11 +4,11 @@ This compact build solders a PCM5102A directly below the ESP32-S3 through a
 six-pin straight 2.54 mm header. It requires a fine-tip soldering iron, solder and a
 multimeter. Disconnect USB and all other power before soldering.
 
-!!! warning "Check your board labels"
-
-    These instructions match the S3-N16R8 ESP32-S3 board and the purple
-    PCM5102A module shown below. Clones can use different layouts. Follow the
-    silkscreen labels and verify continuity before applying power.
+> [!WARNING]
+> **Check your board labels.** These instructions match the S3-N16R8 ESP32-S3
+> board and the purple PCM5102A module shown below. Clones can use different
+> layouts. Follow the silkscreen labels and verify continuity before applying
+> power.
 
 ## Step 1 — Prepare the ESP32
 
@@ -23,12 +23,15 @@ the pins on the opposite side.
 Bridge the two ESP32 solder pads labelled **5Vin** and **OUT**. This routes USB
 5 V to the 5Vin header position that powers the DAC.
 
-![5Vin to OUT solder bridge on the ESP32-S3](../assets/build/esp32-5v-in-out-bridge.jpg){ width="700" }
+<p align="center">
+  <img src="../assets/build/esp32-5v-in-out-bridge.jpg"
+       alt="5Vin to OUT solder bridge on the ESP32-S3" width="700">
+</p>
 
-!!! danger "Do not short adjacent GPIO pins"
-
-    Bridge only the dedicated 5Vin/OUT pads indicated by the board silkscreen.
-    Check the joint for solder splashes before connecting USB.
+> [!CAUTION]
+> **Do not short adjacent GPIO pins.** Bridge only the dedicated 5Vin/OUT pads
+> indicated by the board silkscreen. Check the joint for solder splashes before
+> connecting USB.
 
 ## Step 2 — Configure the PCM5102A solder jumpers
 
@@ -45,7 +48,10 @@ follows:
 This is often printed on the PCB as **1-L, 2-L, H-3, 4-L**. Apply a small
 solder bridge from each numbered centre pad to the indicated H or L pad.
 
-![PCM5102A mode jumpers set to 1-L, 2-L, 3-H and 4-L](../assets/build/pcm5102a-mode-jumpers.jpg){ width="700" }
+<p align="center">
+  <img src="../assets/build/pcm5102a-mode-jumpers.jpg"
+       alt="PCM5102A mode jumpers set to 1-L, 2-L, 3-H and 4-L" width="700">
+</p>
 
 On the inside face, also close the small two-pad solder jumper immediately next
 to the **SCK** header pin. On this module that selects the BCK-derived clock
@@ -55,11 +61,11 @@ Cover the metal housing of the **3.5 mm audio jack**, on the side facing the
 ESP32, with a thin insulating pad. Kapton tape, electrical tape or a thin piece
 of PET sheet works well. Keep the insulation clear of the plug opening.
 
-!!! danger "Insulate the audio jack"
-
-    Without this pad, the metal jack housing can touch solder joints or exposed
-    contacts on the underside of the ESP32 and cause a short circuit. Check that
-    the insulation remains in place when the two boards are pressed together.
+> [!CAUTION]
+> **Insulate the audio jack.** Without this pad, the metal jack housing can
+> touch solder joints or exposed contacts on the underside of the ESP32 and
+> cause a short circuit. Check that the insulation remains in place when the
+> two boards are pressed together.
 
 ## Step 3 — Join the DAC and ESP32
 
@@ -118,7 +124,11 @@ The standard firmware configures optional MCLK on GPIO8, not GPIO10. That does
 not affect this PCM5102A assembly because its SCK jumper is closed and it derives
 the required clock from BCK.
 
-![Side view of the six-pin header between the ESP32-S3 and PCM5102A](../assets/build/esp32-pcm5102a-header.jpg){ width="700" }
+<p align="center">
+  <img src="../assets/build/esp32-pcm5102a-header.jpg"
+       alt="Side view of the six-pin header between the ESP32-S3 and PCM5102A"
+       width="700">
+</p>
 
 ## Step 4 — Inspect the finished assembly
 
@@ -126,21 +136,22 @@ Before applying power, use a multimeter to check that adjacent header pins are
 not shorted. Verify continuity for every row in the table above, then check that
 VIN is not shorted to GND.
 
-<div class="grid" markdown>
+<table>
+  <tr>
+    <td align="center">
+      <img src="../assets/build/esp32-pcm5102a-complete.jpg"
+           alt="Completed ESP32-S3 and PCM5102A receiver" width="400"><br>
+      <em>Completed assembly</em>
+    </td>
+    <td align="center">
+      <img src="../assets/build/esp32-pcm5102a-audio-jack.jpg"
+           alt="PCM5102A audio jack aligned with the ESP32-S3" width="400"><br>
+      <em>Audio-jack side</em>
+    </td>
+  </tr>
+</table>
 
-<figure markdown>
-  ![Completed ESP32-S3 and PCM5102A receiver](../assets/build/esp32-pcm5102a-complete.jpg){ width="400" }
-  <figcaption>Completed assembly</figcaption>
-</figure>
-
-<figure markdown>
-  ![PCM5102A audio jack aligned with the ESP32-S3](../assets/build/esp32-pcm5102a-audio-jack.jpg){ width="400" }
-  <figcaption>Audio-jack side</figcaption>
-</figure>
-
-</div>
-
-The PCM5102A sits on top of the ESP32 with the 3.5 mm audio jack sticking out the end.
+The PCM5102A sits below the ESP32 with the 3.5 mm audio jack at the USB end.
 Plug a USB-C cable into the ESP32 for power.
 
 ## Step 5 — Print the case (optional)

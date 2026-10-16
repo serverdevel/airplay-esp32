@@ -13,11 +13,10 @@ You also need a fine-tip soldering iron, electronics solder, a multimeter and a
 small piece of Kapton tape, electrical tape or thin PET sheet to insulate the
 3.5 mm audio jack from the underside of the ESP32.
 
-!!! tip "Already have an amplifier board?"
-
-    If you have a [SqueezeAMP](../boards/squeezeamp.md) or an
-    [Esparagus Audio Brick](../boards/esparagus-audio-brick.md), you don't need a separate
-    DAC — those boards have one built in. Just flash the matching firmware.
+> [!TIP]
+> If you have a [SqueezeAMP](../boards/squeezeamp.md) or an
+> [Esparagus Audio Brick](../boards/esparagus-audio-brick.md), you don't need a
+> separate DAC — those boards have one built in. Just flash the matching firmware.
 
 ## Check the DAC board
 
@@ -26,10 +25,12 @@ picture below: **1-L, 2-L, H-3 and 4-L**. Boards ship with varying defaults,
 and the wrong bridge position is a common cause of silence. The additional
 bridge beside SCK is covered in the [assembly guide](assembly.md).
 
-<figure markdown>
-  ![PCM5102A DAC board showing the expected solder bridge positions](../assets/build/pcm5102a-mode-jumpers.jpg){ width="600" }
-  <figcaption>PCM5102A configured as 1-L, 2-L, 3-H and 4-L</figcaption>
-</figure>
+<p align="center">
+  <img src="../assets/build/pcm5102a-mode-jumpers.jpg"
+       alt="PCM5102A DAC board showing the expected solder bridge positions"
+       width="600"><br>
+  <em>PCM5102A configured as 1-L, 2-L, 3-H and 4-L</em>
+</p>
 
 ## Optional extras
 
